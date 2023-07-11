@@ -2,21 +2,18 @@
   "Name": "Building the business migration case with Windows Server and SQL Server",
   "Language": "English",
   "Files": [
-        {
-      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/GettingStarted.md",
+     
+    {
+      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/01-SQL-database-migration.md",
       "Order": 1
     },
     {
-      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/01-SQL-database-migration.md",
+      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/02-Create-VM-to-migrate-web-application.md",
       "Order": 2
     },
     {
-      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/02-Create-VM-to-migrate-web-application.md",
+      "RawFilePath": "https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/Hands-on%20lab/03-Azure-Arc-enable-on-premises-VM.md",
       "Order": 3
-    },
-    {
-      "RawFilePath": "https://raw.githubusercontent.com/CloudLabsAI-Azure/Cloud-Native-Application-Protection-Platform-CNAPP/main/module-3-configuring-azure-ado-connector-in-defender-for-devops.md",
-      "Order": 4
     }
     
   ]
