@@ -49,7 +49,7 @@ Configuration Main
                 cd "C:\git"
 
                 git lfs install --skip-smudge
-                git clone --quiet --single-branch "https://github.com/microsoft/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server.git"
+                git clone --quiet --single-branch "https://github.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server.git"
                 cd "C:\git\MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server\"
                 git lfs pull
                 git lfs install --force
