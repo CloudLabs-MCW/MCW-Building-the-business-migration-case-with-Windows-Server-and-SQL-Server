@@ -1,4 +1,4 @@
-## Exercise 4: Azure Arc-enable on-premises VM
+# Lab 04: Azure Arc-enable on-premises VM
 
 Duration: 45 minutes
 
