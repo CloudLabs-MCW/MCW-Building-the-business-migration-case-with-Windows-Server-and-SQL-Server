@@ -1,78 +1,86 @@
-<# 
+<#
 Microsoft Cloud Workshop: BCDR
-.File Name
- - create-vm.ps1
+File Name: create-vm.ps1
 
-.What does this script do?  
- - Creates an Internal Switch in Hyper-V called "Nat Switch"
-    
- - Downloads an Image of an Ubuntu Linux 16.04 Server to the local drive
-
- - Add a new IP address to the Internal Network for Hyper-V attached to the NAT Switch
-
- # - Creates a NAT Network on 192.168.0.0/24
-
- - Creates the Virtual Machine in Hyper-V
-
- - Issues a Start Command for the new "OnPremVM"
+Updated to work with Azure DSC VM Extension
+- Creates an Internal Switch in Hyper-V called "Nat Switch"
+- Adds IP to NAT switch and creates NAT network
+- Creates a VM using a VHD included in the DSC zip package
+- Starts the VM
 #>
 
 Configuration Main
 {
-	Import-DscResource -ModuleName 'PSDesiredStateConfiguration', 'xHyper-V'
+    Import-DscResource -ModuleName 'PSDesiredStateConfiguration', 'xHyper-V'
 
-	node "localhost"
-  	{
-		# Ensures a VM with default settings
+    node "localhost"
+    {
+        # Ensure Internal NAT switch exists
         xVMSwitch InternalSwitch
         {
-            Ensure         = 'Present'
-            Name           = 'Nat Switch'
-            Type           = 'Internal'
+            Ensure = 'Present'
+            Name   = 'Nat Switch'
+            Type   = 'Internal'
         }
-		
-		Script ConfigureHyperV
-    	{
-			GetScript = 
-			{
-				@{Result = "ConfigureHyperV"}
-			}	
-		
-			TestScript = 
-			{
-           		return $false
-        	}	
-		
-			SetScript =
-			{
-                mkdir "C:\git"
-                cd "C:\git"
-                $vmFolder = "C:\git"
-   			    $zipUrl = "https://storagetemp109.blob.core.windows.net/businessmigrate/OnPremWinServerVM.zip"
-   			     $downloadPath = "C:\git\OnPremWinServerVM.zip"
 
-  				 Write-Output "Downloading VM package from Azure Storage..."
-   				 Invoke-WebRequest -Uri $zipUrl -OutFile $downloadPath
+        Script ConfigureHyperV
+        {
+            GetScript = { @{ Result = "ConfigureHyperV" } }
 
-   				 Write-Output "Extracting VM package..."
-   				 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
-   				 [System.IO.Compression.ZipFile]::ExtractToDirectory($downloadPath, $vmFolder)
-				 
-                 $NatSwitch = Get-NetAdapter -Name "vEthernet (NAT Switch)"
-                New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex $NatSwitch.ifIndex
+            TestScript = { return $false }
 
-                New-NetNat -Name NestedVMNATnetwork -InternalIPInterfaceAddressPrefix 192.168.0.0/24 -Verbose
+            SetScript = {
 
-                New-VM -Name OnPremVM `
-                        -MemoryStartupBytes 4GB `
-                        -BootDevice VHD `
-                        -VHDPath 'C:\VM\WinServer\Virtual Hard Disks\WinServer.vhdx' `
-                        -Path 'C:\VM\WinServer\Virtual Hard Disks' `
-                        -Generation 1 `
-                        -Switch "NAT Switch"
+                # DSC extension extracts zip to its working folder
+                $vmFolder = Split-Path -Parent $MyInvocation.MyCommand.Path
+                Write-Output "Working folder: $vmFolder"
 
-                Start-VM -Name OnPremVM
-			}
-		}	
-  	}
+                # Download URL only needed if not already in zip
+                # For DSC extension, the zip already contains scripts + VHD
+                # $zipUrl = "https://<your-sas-url>/OnPremWinServerVM.zip"
+                # $downloadPath = Join-Path $vmFolder "OnPremWinServerVM.zip"
+                # Invoke-WebRequest -Uri $zipUrl -OutFile $downloadPath -UseBasicParsing
+                # [System.IO.Compression.ZipFile]::ExtractToDirectory($downloadPath, $vmFolder)
+
+                # Configure NAT switch IP
+                $natSwitch = Get-NetAdapter -Name "vEthernet (Nat Switch)"
+                if (-not (Get-NetIPAddress -InterfaceIndex $natSwitch.ifIndex -ErrorAction SilentlyContinue)) {
+                    New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex $natSwitch.ifIndex
+                }
+
+                # Create NAT network if not exists
+                if (-not (Get-NetNat -Name "NestedVMNATnetwork" -ErrorAction SilentlyContinue)) {
+                    New-NetNat -Name "NestedVMNATnetwork" -InternalIPInterfaceAddressPrefix 192.168.0.0/24 -Verbose
+                }
+
+                # VHD path relative to DSC extraction folder
+                $vhdPath = Join-Path $vmFolder "WinServer.vhdx"
+                if (-not (Test-Path $vhdPath)) {
+                    throw "VHD not found at $vhdPath. Ensure it is included in the DSC zip package."
+                }
+
+                # Create VM if not exists
+                if (-not (Get-VM -Name "OnPremVM" -ErrorAction SilentlyContinue)) {
+                    New-VM -Name "OnPremVM" `
+                           -MemoryStartupBytes 4GB `
+                           -BootDevice VHD `
+                           -VHDPath $vhdPath `
+                           -Generation 1 `
+                           -Switch "Nat Switch"
+                    Write-Output "VM 'OnPremVM' created."
+                } else {
+                    Write-Output "VM 'OnPremVM' already exists."
+                }
+
+                # Start VM if not running
+                $vm = Get-VM -Name "OnPremVM"
+                if ($vm.State -ne "Running") {
+                    Start-VM -Name "OnPremVM"
+                    Write-Output "VM 'OnPremVM' started."
+                } else {
+                    Write-Output "VM 'OnPremVM' is already running."
+                }
+            }
+        }
+    }
 }
