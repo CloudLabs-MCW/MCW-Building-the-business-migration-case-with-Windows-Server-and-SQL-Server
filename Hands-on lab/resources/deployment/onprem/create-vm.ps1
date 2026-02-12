@@ -47,22 +47,18 @@ Configuration Main
 			{
                 mkdir "C:\git"
                 cd "C:\git"
+                $vmFolder = "C:\git"
+   			    $zipUrl = "https://storagetemp109.blob.core.windows.net/businessmigrate/OnPremWinServerVM.zip"
+   			     $downloadPath = "C:\git\OnPremWinServerVM.zip"
 
-                git lfs install --skip-smudge
-                git clone --quiet --single-branch "https://github.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server.git"
-                cd "C:\git\MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server\"
-                git lfs pull
-                git lfs install --force
+  				 Write-Output "Downloading VM package from Azure Storage..."
+   				 Invoke-WebRequest -Uri $zipUrl -OutFile $downloadPath
 
-                $downloadedFile = "C:\git\MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server\Hands-on lab\resources\deployment\onprem\OnPremWinServerVM.zip"
-                $vmFolder = "C:\VM"
-
-                Add-Type -assembly "system.io.compression.filesystem"
-                [io.compression.zipfile]::ExtractToDirectory($downloadedFile, $vmFolder)
-                # The following command was used to Zip up the VM files originally
-                # [io.compression.zipfile]::CreateFromDirectory("C:\OnPremWinServerVM", "C:\OnPremWinServerVM.zip")
-
-                $NatSwitch = Get-NetAdapter -Name "vEthernet (NAT Switch)"
+   				 Write-Output "Extracting VM package..."
+   				 Add-Type -AssemblyName "System.IO.Compression.FileSystem"
+   				 [System.IO.Compression.ZipFile]::ExtractToDirectory($downloadPath, $vmFolder)
+				 
+                 $NatSwitch = Get-NetAdapter -Name "vEthernet (NAT Switch)"
                 New-NetIPAddress -IPAddress 192.168.0.1 -PrefixLength 24 -InterfaceIndex $NatSwitch.ifIndex
 
                 New-NetNat -Name NestedVMNATnetwork -InternalIPInterfaceAddressPrefix 192.168.0.0/24 -Verbose
