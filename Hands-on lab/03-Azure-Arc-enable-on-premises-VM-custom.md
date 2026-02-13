@@ -1,168 +1,123 @@
+
 # Lab 04: Azure Arc-enable on-premises VM
 
-Duration: 45 minutes
+### Estimated Duration: 30 Minutes
 
-In this exercise, you will Azure Arc-enable a Windows Server VM that Tailspin has on-premises. This VM is being Arc-enabled since there are no plans to migrate it to Azure, but Tailspin would like to simplify the management of all their VMs in a single place. Azure Arc provides the functionality to manage Azure and on-premises VMs in a single place giving Tailspin Toys exactly what they are looking for to simplify VM management and administration.
+In this lab, you will onboard an on-premises Windows virtual machine to Azure using Azure Arc. This will allow the VM to be managed like an Azure resource directly from the Azure portal, even though it is hosted outside Azure.
 
-  [Azure Arc-enable on-premises VM](#exercise-3-azure-arc-enable-on-premises-vm)
+## Objectives
+
+- Understand the concept of Azure Arc-enabled servers.
+
+- Connect an on-premises Windows VM to Azure using the Azure Connected Machine agent.
+
+- Register and manage a non-Azure machine from the Azure portal.
+
+- Verify successful onboarding of the server into Azure Arc.
+
+### Task 1: Run workloads anywhere with Azure Cloud Services
+
+In this exercise, you will deploy and configure the Azure Connected Machine agent on a Windows machine hosted outside of Azure, to ensure that it can be managed through Azure Arc-enabled servers.
+
+1. In the search bar of the Azure portal, type **Azure arc (1)** and select **Azure Arc (2)** from suggestions under Services, as shown below:
    
-   - [Task 1: Generate Azure Arc script to add server](#task-1-generate-azure-arc-script-to-add-server)
+    ![Screenshot of the search azure arc.](images/arcsrch.png "search azure arc")
+  
+1. On the **Azure Arc** page, select **Machines (1)** under **Infrastructure** from left pane, click on **Onboard/Create (2)**, then **Onboard existing machine (3)**.
     
-   - [Task 2: Run script to add server to Azure Arc](#task-2-run-script-to-add-server-to-azure-arc)
+    ![Screenshot of the add server.](images/mcob.png "add server")
     
-   - [Task 3: Verify Azure Arc-enabled VM](#task-3-verify-azure-arc-enabled-vm)
-
-### Task 1: Generate Azure Arc script to add server
-
-1. Sign in to the [Azure Portal](https://portal.azure.com). 
-
-2. In the **Search resources, services, and docs** box at the top of the portal, search for **Azure Arc**, then select the **Azure Arc** service.
-
-    ![An Azure Portal search is shown showing the results for a search for Azure Arc with the Azure Arc service in the results highlighted.](images/Ex3-T1-S2.png "Azure Portal search for Azure Arc with 'Azure Arc' option highlighted")
-
-3. On the **Azure Arc** pane, select the **Infrastructure** tab, then select the **Add** button under **Servers**.
-
-    ![The Azure Arc pane in the Azure Portal is shown navigated to the Infrastructure pane and the Servers Add button is highlighted.](images/Ex3-T1-S3.png "Azure Arc pane showing Infrastructure tab")
-
-4. Under **Add a single server** select **Generate script**.
-
-    ![The Add servers with Azure Arc pane is shown with the Generate Script button highlighted for the Add a single server option.](images/Ex3-T1-S4.png "Add servers with Azure Arc with Generate script")
-
-5. On the **Add a server with Azure Arc** pane, read the requirements of Azure Arc that are listed, then select **Next**.
-
-    ![The prerequisites tab is shown for the Add a server with Azure Arc pane with the requirements listed.](images/Ex3-T1-S5.png "Add a server with Azure Arc requirements")
-
-6. On the **Resource details** tab, enter the following values, then select **Next**.
-
-    - **Resource group**: Select the Resource Group created for this lab. For example: `tailspin-rg`.
-    - **Region**: `Central US`
-    - **Operating system**: `Windows`
-    - **Connectivity method**: `Public endpoint`
-
-    ![The Resource details tab of the Add a server with Azure Arc pane is displayed with values entered.](images/Ex3-T1-S6.png "Resource details tab with values entered")
-
-7. On the **Tags** tab, enter the following tag values to identify this server, then select **Next**:
-
-    - **Datacenter**: `headquarters`
-    - **City**: `Milwaukee`
-    - **StateOrDistrict**: `WI`
-    - **CountryOrRegion**: `USA`
-
-    ![The Tags tab of the Add a server with Azure Arc pane is shown with the tag values entered.](images/Ex3-T1-S7.png "Tags tab with all tag values entered")
-
-8. On the **Download and run script** tab, select **Download** to download the generated script. By default, the script named `OnboardingScript.ps1` will be saved to the `Downloads` folder.
-
-    ![The Download button is highlighted on the Download and run script tab.](images/Ex3-T1-S8.png "Download and run script")
-
-### Task 2: Run script to add server to Azure Arc
-
-1. In the Azure Portal, navigate to the Resource Group **tailspin-rg**, then select the `tailspin-onprem-hyperv-vm` virtual machine resource. This is the simulated on-premises Hyper-V host VM.
-
-    ![The resource group for the lab is shown with the simulated on-premises Hyper-V Host VM highlighted in the resource list.](images/Ex3-T2-S1.png "Resource group with simulated on-premises Hyper-V Host VM highlighted")
-
-2. On the left, select **Bastion** under **Operations**.
-
-    ![The virtual machine pane for the simulated on-premises hyper-v host VM is shown with the Bastion link under Operations highlighted.](images/Ex2-T2-S2.png "Bastion link under Operations")
-
-3. Enter the **Username** and **Password**, then select **Connect**.
-
-    ![The Bastion pane is shown for the VM with the Username and Password values entered and fields highlighted.](images/Ex3-T2-S3.png "Bastion credentials shown entered")
-
-    > **Note**: Credentials for logging in to the VM :
-    - **Username**: `demouser`
-    - **Password**: `demo!pass123`
-
-4. Once connected to the Hyper-V Host VM, open the **Start menu**, then search for and run the **Hyper-V Manager**.
-
-    ![Open Hyper-V.](images/Ex3-T2-S4.png "Hyper-v")
-
-5. Within the **Hyper-V Manager**, double-click the **OnPremVM** VM to connect to it.
-
-    ![The Hyper-V Manager is shown with the list of virtual machines displayed with the OnPremVM highlighted.](images/Ex3-T2-S5.png "Hyper-V Manager list of VMs with OnPremVM shown")
-
-6. Once connected to the **OnPremVM** VM within Hyper-V, sign in using the **Administrator** account and the password of `demo!pass123`.
-
-    > **Note**: If you encounter that the **OnPremVM** has **No Internet Connection**, go back into the `tailspin-onprem-hyperv-vm` Hyper-V Host VM and perform the following steps:
-    > - Open the **Network Connections**
-    > - Locate the **Ethernet** connection and right-click it.
-    > - Select **Properties**
-    > - Select the **Sharing** tab
-    > - Disable and re-enable **Internet Connection Sharing** on this connection.
-    >
-    > You may see a warning message when disabling it and re-enabling it, but it will still work to restore Internet Connection Sharing with the **OnPremVM** that is connected through the Host VM's network connection.
-    >
-    > ![The Ethernet connection properties on the Hyper-V Host VM showing Internet Connection Sharing option highlighted.](images/Ex3-T2-S6.note.png "Ethernet Properties for Internet Connection Sharing")
-
-    ![Login to Onprem VM.](images/Ex3-T2-S6.png "Admin login")
-    
-7. Within the **OnPremVM**, open **Internet Explorer**, go to the following link to download the Windows Update for installing **PowerShell 5.1**, and run it. This will install PowerShell 5.1 on the Windows Server 2012 R2 VM, since this is the version of PowerShell required by the Azure Arc script.
-
-    <https://go.microsoft.com/fwlink/?linkid=839516>
-    
-    - Click on **Open**.
-    
-    ![download the Windows Update for installing PowerShell 5.1.](images/Ex3-T2-S7.png "PowerShell 5.1")
-    
-    - Accept the license terms by clicking on **I Accept**. 
-    
-    ![download the Windows Update for installing PowerShell 5.1.](images/Ex3-T2-S7.1.png "PowerShell 5.1")
-    
-    - On **Download and Install Updates** click on **Restart Now**.
-    
-    ![download the Windows Update for installing PowerShell 5.1.](images/Ex3-T2-S7.2.png "PowerShell 5.1")
-
-8. Within the **OnPremVM**, open **Internet Explorer**, go to the following link to download the .NET Framework 4.8, and install it. The Azure Arc script will install the **Azure Connected Machine Agent** which requires **.NET Framework 4.6 or later**.
-
-    <https://go.microsoft.com/fwlink/?LinkId=2085155>
-
-    > **Note**: The .NET Framework installer will display a **Blocking Issues** box with a note that another update needs to be installed.
-    > The following 2 updates will need to be installed in the following order:
-    > - Install KB2919442 from <https://www.microsoft.com/en-us/download/details.aspx?id=42153>
-    > - Install KB2919355 from <https://www.microsoft.com/en-us/download/details.aspx?id=42334>
-    >
-    > Be sure to restart the VM after installing the updates, before you continue with the .NET Framework install.
-    >
-    > ![The blocking issue warning of the .NET Framework installer is shown with the message for the blocking issue highlighted.](images/dot-net-framwork-blocking-issue.png "Blocking issue warning with message highlighted")
-    - Once the **.NET Framework** is installed on **Download and Install Updates** click on **Restart Now**.
-    
-     ![download the Windows Update for installing .NET Framework .](images/Ex3-T2-S7.2.png ".NET Framework")
-
-9. Within the **OnPremVM**, open the **Windows PowerShell ISE**, and create a new script file.
-
-10. Paste in the contents of the Azure Arc `OnboardingScript.ps1` script that was previously downloaded.
-
-    > **Note**: Within the Hyper-V Virtual Machine Connection window, you may need to use the **Clipboard** -> **Type clipboard text** menu option to paste into the **OnPremVM**.
+1. On the **Add servers with Azure Arc** page, In the **Basics** section, add the following details:
      
-     ![Run OnboardingScript.ps1 script .](images/Ex3-T2-S10.png "OnboardingScript.ps1")
-
-11. Run the full script. This will install the Azure Arc agent and Arc-enable the VM. When the script opens up a browser window, enter your credentials to authenticate with Azure.
-
-    > **Note**: When the Azure Arc script opens a new browser window to authenticate you with Azure, be sure to use an Organization Account with permissions to create `Microsoft.HybridCompute/machines` resources. Using a Personal Account is not supported and will result in a `AZCM0042: Failed to Create Resource` error message.
+   - Subscription: **Select default subscription**
     
-    ![Azure credentials login .](images/Ex3-T2-S11.png "Azure credentials")
+   - Resource group: **SmartHotelRG (1)**
+  
+   - Region: Select **<inject key="Region" enableCopy="false" /> (2)**
+   
+   - Operating system: **Windows (3)**
+   
+   - Leave other values as default and click on **Next (4).**
+
+        ![Screenshot of the resource details tab.](images/AIM-image19.png "resource details tab")
+
+1. In the **Tags** section, leave the values as default and click on **Next**.
+
+     ![](images/15-7-25-l9-5.png)
+
+1. In the **Download and run script** section, click **copy (1)** icon to copy the entire script. Paste it into Notepad or your preferred text editor, as you will need it in the upcoming steps, then click on **Close (2)**.
+
+    ![Screenshot of the copy script.](images/cpcls.png "copy script")
     
-    ![Azure credentials login .](images/Ex3-T2-S11.1.png "Azure credentials")
+1. Go to the **Start** button in the VM, type **Hyper-V Manager (1)** and select **Hyper-V Manager (2)**.
 
-12. When the script finishes executing successfully, a message stating "**Connected machine to Azure**" will be shown, along with the Azure Portal resource URL for the Azure Arc-enabled Server.
+    ![Screenshot of Hyper-V Manager, with the 'Hyper-V Manager' action highlighted.](images/hvm.png "Hyper-V Manager")
 
-    ![The command line output of the Azure Arc script is shown that includes the Connected machine to Azure message showing the script executed successfully.](images/Ex3-T2-S12.png "Azure Arc script successful with Connected machine to Azure message")
+   > **Note:** You can also open the **Hyper-V manager** by clicking on the icon that is present in the taskbar. 
+    
+1. In Hyper-V Manager, select **HOSTVMS<inject key="DeploymentID" enableCopy="false" />**. 
+  
+    ![Screenshot of Hyper-V Manager on the SmartHotelHost.](images/15-7-25-l9-7.png "Hyper-V Manager")
 
-### Task 3: Verify Azure Arc-enabled VM
+ 1. In the Hyper-V Manager, select the **AzureArcVM** VM and you will see the state as **Running**.
 
-1. In the Azure Portal, navigate to the Resource Group for the lab. Scroll down and locate the Azure resource of type **Server - Azure Arc** and select it.
+    ![](images/15-7-25-l9-8.png)  
 
-    ![The tailspin-rg Resource group for the lab is shown in the Azure Portal.](images/Ex3-T3-S1.png "tailspin-rg resource group")
+    >**Note:** If you are unable to find the state for the **AzureArcVM (1)** VM as Running, then select **Start (2)** in the Actions pane on the right.
 
-    > **Note**: The on-premises VM has been Azure Arc-enabled and can be managed alongside other Azure resources. This is enabled by the **Azure Connected Machine Agent** running on the VM that facilitates the interaction between Azure and the Azure Arc-enabled VM.
+    ![Screenshot of Hyper-V Manager showing the start button for the AzureArcVM.](images/infra-l9-3.png "Start AzureArcVM")    
+    
+1. In Hyper-V Manager, select the **AzureArcVM (1)** VM, then select **Connect (2)** in the Actions pane on the right.
 
-2. This is the **Server - Azure Arc** pane for the on-premises virtual machine that was just Azure Arc-enabled. The **Status** shows **Connected** to signify that the Azure Arc-enabled virtual machine is connected to Azure. Also, notice that the **Computer Name** and **Operating System** of the virtual machine are displayed.
+    ![Screenshot of Hyper-V Manager showing the connect button for the AzureArcVM.](images/infra-l10-2-new.png "Connect to AzureArcVM")  
+    
+1. Under Connect to AzureArcVM, click on **Connect** and then log into the VM with the **Administrator password**: **<inject key="SmartHotel Admin Password" />** (If the copy/paste is not working in the hyper-V machine, please try typing the password. The login screen may pick up your local keyboard mapping, use the 'eyeball' icon to check).
+ 
+    ![Screenshot of the Connect to AzureArcVM.](images/infra-l10-4.png)
+    
+1. From the **Start** menu of the AzureArcVM, search for **Windows Powershell (1)** and right click on **Windows Powershell (2)** and select **Run as adminstrator (3)**.
 
-    ![The Server - Azure Arc pane in the Azure Portal is shown for the on-premises VM with status, computer name, and operating system values highlighted within the Essentials section.](images/Ex3-T3-S2.png "Azure Portal Server - Azure Arc pane for Azure Arc-enabled virtual machine")
+    ![Screenshot of the PowerShell.](images/pshell.png)
+      
+1. In PowerShell, run the following command to set the execution policy as unrestricted.
 
-3. From here, there are several **Azure Arc** capabilities available to use for managing the Azure Arc-enabled virtual machine.
+    ```
+    Set-ExecutionPolicy -ExecutionPolicy unrestricted
+    ```
+   >**Note:** If you get an option, **"Do you want to change the execution policy?"**, please type **A** and press Enter. 
 
-    ![The Capabilities section of the Server- Azure Arc pane is shown with the list of capabilities to choose from.](images/Ex3-T3-S3.png "Azure Arc capabilities listed on the Server - Azure Arc pane")
+1. Now, run the whole script that you copied in Notepad earlier in **step 5**.
 
-4. Select **Extensions** under **Settings**. This is where you can install Extensions on the Azure Arc-enabled virtual machine. For example, the **Custom Script Extension for Windows - Azure Arc** extension can be used to download PowerShell scripts and files from Azure storage, and launch a PowerShell script on the machine.
+1. After running the script, packages will be installed, and then you will be directed to a pop-up browser page to log into your Azure account for authentication purposes. Use the below Azure credentials:
 
-    ![The Extensions pane for the Server - Azure Arc resource is shown with the Extensions link under Settings highlighted.](images/Ex3-T3-S4.png "Azure Portal Server - Azure Arc pane showing Extensions")
+    >**Note:** On the Welcome to Microsoft Edge page, select  **Start without your data**, on **Stay current with your browsing data** select **Confirm and continue**, and on the help for importing Google browsing data page, select the  **Continue without this data**  button. Then, proceed to select  **Confirm and start browsing**  on the next page has a context menu.
+
+    - Enter your **Username/Email**: **<inject key="AzureAdUserEmail"></inject>** **(1)**  in the Sign in field. Click **Next (2)** to continue.
+
+       ![](./images/odlusr.png)
+    
+    - Enter **Temporary Access Pass**: **<inject key="AzureAdUserPassword"></inject>** **(1)** and click **Sign in** **(2)**
+
+       ![](./images/odltap.png)
+
+   > **Note:** Move back to the PowerShell pane, and now you have connected your AzureArcVM to Azure successfully.
+    
+    ![Screenshot of the PowerShell script.](images/infra-l10-5.png)
+     
+ 1. Close the AzureArcVM, navigate to **Azure Arc** page in the Azure portal, select **Machines (1)** under **Azure Arc resources** and now verify that a server is connected successfully **(2)**.
+
+    >**Note:** The name of the new server added could be different. You should refresh to see the new server.
+    
+    ![Screenshot of the server added.](images/AIM-image20.png)
+    
+## Summary
+
+In this lab, you successfully onboarded an on-premises Windows virtual machine to Azure using Azure Arc. You installed and configured the Azure Connected Machine agent, authenticated the machine with Azure, and verified that it appears as an Azure Arc-enabled server in the Azure portal.
+
+# Conclusion
+
+In this hands-on lab series, you have completed an end-to-end **Azure migration readiness and hybrid management workflow**. You discovered on-premises infrastructure using **Azure Migrate**, created detailed server assessments, analyzed workload dependencies through Log Analytics integration, and evaluated SQL database compatibility using **Azure Data Studio**. You assessed migration paths for both **Azure SQL Database** and **Azure SQL Managed Instance**, identifying feature readiness and compatibility considerations. Finally, you extended Azure management to on-premises resources by onboarding a server with **Azure Arc**, enabling centralized governance and control. Together, these exercises demonstrated a complete **discover, assess, plan, and hybrid-manage migration strategy** for Windows and SQL workloads in Azure.
+
+## You have successfully completed this lab !
+ 
+
