@@ -1,11 +1,11 @@
 
 # Lab 04: Azure Arc-enable on-premises VM
 
-### Estimated Duration: 30 Minutes
+### Estimated Duration: 20 Minutes
 
 In this lab, you will onboard an on-premises Windows virtual machine to Azure using Azure Arc. This will allow the VM to be managed like an Azure resource directly from the Azure portal, even though it is hosted outside Azure.
 
-## Objectives
+## Lab Objectives
 
 - Understand the concept of Azure Arc-enabled servers.
 
