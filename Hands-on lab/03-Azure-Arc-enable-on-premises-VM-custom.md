@@ -3,7 +3,7 @@
 
 ### Estimated Duration: 20 Minutes
 
-In this lab, you will onboard an on-premises Windows virtual machine to Azure using Azure Arc. This will allow the VM to be managed like an Azure resource directly from the Azure portal, even though it is hosted outside Azure.
+In this lab, you will onboard an on-premises Windows machine to Azure using Azure Arc. This will allow the on-premises windows machine to be managed like an Azure resource directly from the Azure portal, even though it is hosted outside Azure.
 
 ## Lab Objectives
 
