@@ -1,1 +1,21 @@
-
+[
+  {
+    "Name": "Building the business migration case with Windows server and SQL server",
+    "Language": "English",
+    "BaseURL": "https://github.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server",
+    "Files": [
+      {
+        "RawFilePath": "https://docs-api.cloudlabs.ai/repos/raw.",
+        "Order": 1
+      },
+      {
+        "RawFilePath": "https://docs-api.cloudlabs.ai/repos/raw",
+        "Order": 2
+      },
+      {
+        "RawFilePath": "https://docs-api.cloudlabs.ai/repos/raw.",
+        "Order": 3
+      }
+    ]
+  }
+]
