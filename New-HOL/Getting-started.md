@@ -1,6 +1,6 @@
 # Building the Business Migration Case with Windows Server and SQL Server
 
-### Overall Estimated Duration: 3 Hours
+### Estimated Duration: 15 minutes
 
 ## 📘 Lab Scenario
 
