@@ -1,6 +1,6 @@
 # Building the Business Migration Case with Windows Server and SQL Server
 
-### Estimated Duration: 30 minutes
+### Estimated Duration: 8 Hours
 
 ## 📘 Lab Scenario
 
@@ -68,7 +68,7 @@ Welcome to your Building the Business Migration Case with Windows Server and SQL
 
 Once you're ready to dive in, your virtual machine and **Guide** will be right at your fingertips within your web browser.
 
-![Access Your VM and Lab Guide](./Images/guideee.png)
+![](img/Gettingstarted/intro.png)
 
 > **Note:** If you see a PowerShell window running, minimize it after accessing the environment to ensure the script continues to run in the background without interruption.
 
@@ -80,47 +80,53 @@ Your virtual machine is your workhorse throughout the workshop, and the lab guid
 
 To get a better understanding of your lab resources and credentials, navigate to the **Environment** tab.
 
-![Explore Lab Resources](./Images/bi1.png)
+![](img/Gettingstarted/img1.png)
 
 ### Utilizing the Split Window Feature
 
 For convenience, you can open the lab guide in a separate window by selecting the **Split Window** button from the top-right corner.
 
-![Use the Split Window Feature](./Images/splittt.png)
+![](img/Gettingstarted/img2.png)
 
 ### Managing Your Virtual Machine
 
-From the **Resources (1)** tab, you can **Start, Stop, or Restart (2)** your virtual machine as needed. Your experience is in your hands.
+From the **Resources** tab, you can **Start, Stop, or Restart** your virtual machine as needed. Your experience is in your hands.
 
-![Manage Your Virtual Machine](./Images/vmssr2.png)
+![](img/Gettingstarted/img3.png)
 
 ### Lab Guide Zoom In and Zoom Out
 
 To adjust the zoom level for the environment page, click on the **A↕** icon located next to the timer in the lab environment.
 
-![](./Images/zumm.png)
+![](img/Gettingstarted/mg4.png)
+
+### Resize the Virtual Machine View
+
+Use the **slider (three vertical dots)** located between the Virtual Machine and the Lab Guide panes to adjust the display size, allowing you to customize the layout based on your preference.
+
+![](img/Gettingstarted/img4.png)   
 
 ### Let's Get Started with the Azure Portal
 
 1. On your virtual machine, click on the Azure portal icon.
 
-   ![azure portal desktop icon](./Images/portalll.png)
+   ![](img/Gettingstarted/img5.png)
 
 1. On the **Sign in to Microsoft Azure** tab, enter the following **Email/Username (1)**, and then click on **Next (2)**.
 
    - **Email/Username:** <inject key="AzureAdUserEmail"></inject>
 
-   ![](Images/odlusr.png)
+   ![](img/Gettingstarted/img6.png)
 
-1. Enter the following **Password (1)**, and then click on **Sign in (2)**.
+1. Enter the following **Temporary password (1)**, and then click on **Sign in (2)**.
 
-   - **Password:** <inject key="AzureAdUserPassword"></inject>
+   - **Temp Access Pass:** <inject key="AzureAdUserPassword"></inject>
 
-   ![](Images/odltap.png)
+   ![](img/Gettingstarted/img7.png)
 
 1. If you are prompted to stay signed in, click on **No**.
 
-   ![](Images/staysignn.png)
+   ![](img/Gettingstarted/img8.png)
 
 ## 📞 Support Contact
 
@@ -133,7 +139,7 @@ Learner Support Contacts:
 
 Click on **Next >>** from the bottom-right corner to embark on your lab journey.
 
-![](Images/1nct.png)
+![](img/2nct.png)
 
 Now you're all set to explore the powerful world of technology. Feel free to reach out if you have any questions along the way. Enjoy your workshop!
 
