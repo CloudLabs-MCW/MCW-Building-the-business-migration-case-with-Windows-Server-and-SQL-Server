@@ -1,10 +1,10 @@
 # Exercise 3: Azure Arc-enable on-premises VM
 
-### Estimated Duration: 45 Minutes
+### Estimated Duration: 60 Minutes
 
 ## 📘 Lab Scenario
 
-In this exercise, you Azure Arc-enable a Windows Server virtual machine that Tailspin Toys runs on-premises. There are no plans to migrate this server to Azure, but Tailspin Toys wants to manage all of its servers — both in Azure and on-premises — from a single place. **Azure Arc** makes this possible by projecting the on-premises server into Azure so that it can be governed and managed alongside native Azure resources.
+In this exercise, you Azure Arc-enable a Windows Server virtual machine that Tailspin Toys runs on-premises. There are no plans to migrate this server to Azure, but Tailspin Toys wants to manage all of its servers - both in Azure and on-premises - from a single place. **Azure Arc** makes this possible by projecting the on-premises server into Azure so that it can be governed and managed alongside native Azure resources.
 
 ## 📋 Overview
 
@@ -171,7 +171,66 @@ In this task, you confirm that the on-premises server now appears in Azure and c
 
    ![](img/Lab03/img20.png)
 
----
+## Task 4: Review the Azure Arc-enabled server **(Read-Only)**
+
+> **Note:** This is a **Read-Only** task. There are no steps to perform. Read through it while looking at the **Machine - Azure Arc** resource you opened in Task 3, so you can see for yourself what Azure now knows about the on-premises server.
+
+When the onboarding script finished, Azure created a resource for **OnPremVM** in your resource group. That resource is what makes the server manageable from Azure. This task walks through what is on that page and what each part tells you.
+
+### The Overview page
+
+The **Overview** page of the Arc machine shows the details that the Azure Connected Machine agent reported back to Azure:
+
+| Field | What it tells you |
+| --- | --- |
+| **Status** | Whether the agent is currently reporting in. **Connected** means Azure heard from the machine recently. |
+| **Computer name** | The name of the server as Windows knows it, not the name of the Azure resource. |
+| **Operating system** | The edition and version of Windows Server running on the machine. |
+| **Agent version** | The version of the Azure Connected Machine agent that the onboarding script installed. |
+| **Resource group** | The resource group you selected in Task 1. The Arc machine lives there like any other Azure resource. |
+| **Last status change** | When the status last changed, which is how you would spot a server that has gone offline. |
+
+The status is based on a heartbeat that the agent sends to Azure. If the server is shut down or loses internet access, the status changes to **Disconnected**. This is how an administrator would notice an unreachable server without logging on to it.
+
+### The resource ID
+
+Select **JSON View** in the top-right corner of the Overview page. The `id` field at the top is the full Azure Resource ID of the Arc machine, and it follows the same format as any other Azure resource:
+
+```
+/subscriptions/<subscription-id>/resourceGroups/tailspin-<inject key="DeploymentID" enableCopy="false"/>/providers/Microsoft.HybridCompute/machines/OnPremVM
+```
+
+The resource provider is **Microsoft.HybridCompute** rather than **Microsoft.Compute**, which is the only difference between this server and an Azure virtual machine as far as Azure Resource Manager is concerned. Everything that works with a resource ID - role assignments, tags, resource locks, Azure Resource Graph queries - works here too.
+
+### The left menu
+
+The left menu of the Arc machine lists what you can now do with this server from Azure. A few of them are worth opening to see what is available:
+
+- **Extensions** - the same mechanism used to install agents on Azure virtual machines. The list is empty at this point, because the onboarding script installed only the Connected Machine agent itself. Anything installed from here is delivered through that agent.
+
+- **Updates** - Azure Update Manager. Selecting **Check for updates** runs a one-time assessment of which operating system updates the server is missing, and reports the result in the portal.
+
+- **Inventory** - records the software installed on the server and the Windows services running on it.
+
+- **Machine configuration** - audits settings inside the operating system, such as whether a specific service is running, and reports the machine as compliant or non-compliant.
+
+- **Access control (IAM)** - role assignments, exactly as on any other Azure resource. Access to this on-premises server can now be granted through Azure RBAC.
+
+- **Tags** - the same tagging that Tailspin Toys applies to their Azure resources for cost tracking and ownership.
+
+None of these required the server to move to Azure. They became available the moment the agent connected.
+
+### Comparing the three workloads
+
+You have now placed the three parts of the Tailspin Toys estate under Azure management in three different ways:
+
+| Workload | Where it runs | What you did |
+| --- | --- | --- |
+| WideWorldImporters database | Azure SQL Managed Instance | Migrated it in Exercise 1 |
+| Web application host | Windows Server virtual machine in Azure | Created it in Exercise 2 |
+| On-premises server | Inside the Hyper-V host | Arc-enabled it in Exercise 3 |
+
+The first two were migrated. The third was not, and does not need to be. It stays where it is, and Tailspin Toys still manages it from the Azure portal alongside everything else. That is the outcome the migration plan set out to achieve.
 
 ## 🧾 Summary
 
@@ -182,8 +241,6 @@ In this exercise, you accomplished the following:
 - Verified that the Azure Arc-enabled server shows a **Connected** status in the Azure portal.
 
 You have now completed the full migration story for Tailspin Toys. The database tier runs on Azure SQL Managed Instance, the application tier runs on a Windows Server virtual machine in Azure, and the server that stays on-premises is managed from Azure through Azure Arc.
-
----
 
 ## Troubleshooting
 
