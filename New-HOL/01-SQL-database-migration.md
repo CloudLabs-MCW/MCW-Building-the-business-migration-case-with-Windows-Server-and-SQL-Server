@@ -19,18 +19,17 @@ In this exercise, you will complete the following tasks:
 - **Task 1:** Review creation of Azure SQL Managed Instance **(Read-Only)**
 - **Task 2:** Back up the WideWorldImporters database
 - **Task 3:** Upload the backup to Azure Blob Storage
-- **Task 4:** Create an Azure Database Migration Service instance
-- **Task 5:** Assign roles to the user and the managed identity
-- **Task 6:** Migrate the database to Azure SQL Managed Instance
-- **Task 7:** Verify the migrated database
+- **Task 4:** Assign roles to the user and the managed identity
+- **Task 5:** Migrate the database to Azure SQL Managed Instance
+- **Task 6:** Verify the migrated database
 
 ---
 
 ## Task 1: Review creation of Azure SQL Managed Instance **(Read-Only)**
 
-> **Note:** This is a **Read-Only** task. Creating a new Azure SQL Managed Instance can take up to **6 hours**, so a Managed Instance named **sqlmi-hol** has **already been created for you**. Read through this task to understand how it is created, then move on to Task 2.
+> **Note:** This is a **Read-Only** task. Creating a new Azure SQL Managed Instance can take up to **6 hours**, so a Managed Instance named **sqlmi-hol** has already been created for you. Read through this task to understand how it is created, and then continue with Task 2.
 
-The Managed Instance in this lab was created with the following configuration:
+The Managed Instance used in this lab was created with the following configuration:
 
 1. From the Azure portal home page, select **Create a resource**, search for **azure sql managed instance**, and then select **Create**.
 
@@ -52,49 +51,40 @@ The Managed Instance in this lab was created with the following configuration:
 
    ![](img/Lab01/img7.png)
 
-   > **Note:** Because provisioning takes several hours, the instance has already been created for you.
-
 ---
 
 ## Task 2: Back up the WideWorldImporters database
 
-In this task, you connect to the on-premises SQL Server virtual machine and create a full backup of the WideWorldImporters database using SQL Server Management Studio (SSMS).
+In this task, you create a full backup of the WideWorldImporters database using SQL Server Management Studio (SSMS).
 
-1. In the Azure portal, open the resource group **ODL-tailspin-<inject key="DeploymentID" enableCopy="false"/>-tailspin**, and then select the virtual machine named **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**.
+> **Note:** The lab virtual machine you are already working on is **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**, the simulated on-premises SQL Server that holds the source database. You do not need to connect to any other machine for this task.
 
-   > **Note:** This is the simulated on-premises SQL Server that holds the source database.
+1. On the lab virtual machine, click on the **Windows Start** button **(1)**, type **SQL Server Management Studio (2)**, and then select **Microsoft SQL Server Management Studio (3)** from the search results.
 
-   ![](img/Lab01/img8.png)
-
-1. On the left menu, under **Connect**, select **Bastion**.
-
-   ![](img/Lab01/img9.png)
-
-1. Enter the following credentials, and then select **Connect**:
-
-   - **Username:** demouser
-   - **Password:** demo!pass123
-
-   ![](img/Lab01/img10.png)
-
-1. A new browser tab opens with the virtual machine desktop. On the virtual machine, open the **Start** menu, type **SQL Server Management Studio**, and then open it.
+   > **Note:** SQL Server Management Studio can take up to a minute to open the first time you launch it.
 
    ![](img/Lab01/img11.png)
 
-1. In the **Connect to Server** dialog box, enter the following values, and then select **Connect**:
+1. In the **Connect to Server** dialog box, enter the following values, and then select **Connect (4)**:
 
-   - Server name: **localhost (1)**
-   - Authentication: **Windows Authentication (2)**
-   - Trust Server Certificate: **Checked (3)**
-   - Click on **Connect (4)**
+   - **Server type:** Database Engine
+   - **Server name (1)**: **localhost**
+   - **Authentication (2)**: **Windows Authentication**
+   - **Trust server certificate (3)**: selected
 
    ![](img/Lab01/img12.png)
 
-1. In **Object Explorer** on the left, expand **Databases**. You should see the **WideWorldImporters** database.
+1. Once connected, confirm that **Object Explorer** on the left shows **localhost (SQL Server 15.0.xxxx - SQLServer\demouser)**.
+
+   > **Note:** The `demouser` account is a member of the **sysadmin** server role, which is required to back up and restore databases.
 
    ![](img/Lab01/img13.png)
 
-   > **Note:** If you do **not** see the **WideWorldImporters** database under **Databases**, the source database has not been restored on this virtual machine yet. Follow the sub-steps below to restore it, and then continue with step 7. If the database is already present, skip directly to step 7.
+1. In **Object Explorer**, expand **Databases**. You should see the **WideWorldImporters** database.
+
+   ![](img/Lab01/img13.png)
+
+   > **Note:** If you do not see the **WideWorldImporters** database under **Databases**, the source database has not been restored on this virtual machine yet. Follow the sub-steps below to restore it, and then continue with step 5. If the database is already present, go directly to step 5.
 
    - On the toolbar, click on the **New Query** button **(1)**.
 
@@ -143,22 +133,23 @@ In this task, you connect to the on-premises SQL Server virtual machine and crea
 
 1. In the **Back Up Database** window, select the existing path under **Destination**, and then click on **Remove**. You will add a new path for the backup.
 
+   > **Note:** You must remove the default destination and specify a new file. Backing up to a file that already contains a backup from a different SQL Server version fails with the error *"The Backup cannot be performed because the existing media set is formatted with an incompatible version."*
+
    ![](img/Lab01/img17.png)
 
 1. Click on the **Add (1)** button, paste **`C:\Backup\WideWorldImporters.bak` (2)** into the **File name** box, and then click on **OK (3)**.
 
    ![](img/Lab01/img18.png)
 
-1. Back in the **Back Up Database** window, confirm the following values, and then select **OK**:
+1. Back in the **Back Up Database** window, confirm the following values, and then select **OK (4)**:
 
    - Database: **WideWorldImporters (1)**
    - Backup type: **Full (2)**
    - Path: **C:\Backup\WideWorldImporters.bak (3)**
-   - Click on **OK (4)**
 
    ![](img/Lab01/img20.png)
 
-1. When the backup completes, a message reads **The backup of database 'WideWorldImporters' completed successfully.** Select **OK**.
+1. When the backup completes, a message reads **The backup of database 'WideWorldImporters' completed successfully**. Select **OK**.
 
    ![](img/Lab01/img19.png)
 
@@ -168,9 +159,11 @@ In this task, you connect to the on-premises SQL Server virtual machine and crea
 
 Azure Database Migration Service reads the source backup from an Azure Storage blob container. In this task, you upload the `.bak` file to the **sql-backup** container using Azure Storage Explorer.
 
-1. On the **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm** virtual machine, open **Microsoft Edge** and go to the following URL to download **Azure Storage Explorer**:
+1. On the lab virtual machine, open **Microsoft Edge** and go to the following URL to download **Azure Storage Explorer**:
 
-   `https://go.microsoft.com/fwlink/?linkid=2216182`
+   ```
+   https://go.microsoft.com/fwlink/?linkid=2216182
+   ```
 
    ![](img/Lab01/img22.png)
 
@@ -182,7 +175,7 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img23.png)
 
-1. Accept the license agreement **(1)** and click on **Install (2)**. Keep the default options, and then click on **Finish** to complete the installation.
+1. Accept the license agreement **(1)** and click on **Install (2)**. Keep the default options, and then click on **Finish** to complete the installation. Azure Storage Explorer opens automatically.
 
    ![](img/Lab01/img24.png)
 
@@ -211,11 +204,13 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img30.png)
 
-1. In the left **Explorer** pane, expand your subscription **(1)**, expand **Storage Accounts**, expand the account named similar to **tailspinsql...**, expand **Blob Containers**, and then select the **sql-backup (2)** container.
+1. In the left **Explorer** pane, expand your subscription **(1)**, expand **Storage Accounts**, expand **storage<inject key="DeploymentID" enableCopy="false"/>**, expand **Blob Containers**, and then select the **sql-backup (2)** container.
 
    ![](img/Lab01/img31.png)
 
 1. Select **Upload (1)**, and then select **Directory (2)**.
+
+   > **Note:** Upload the **Backup** folder, not the individual `.bak` file. Azure Database Migration Service reads the backup from a folder inside the container, and only folders one level deep are supported.
 
    ![](img/Lab01/img32.png)
 
@@ -231,59 +226,17 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img35.png)
 
-1. When the upload completes, verify the confirmation message in the **Activities** window. Then confirm that the **WideWorldImporters.bak** file appears in the **Backup** folder inside the **sql-backup** container.
+1. When the upload completes, verify the confirmation message in the **Activities** window, and then confirm that the **WideWorldImporters.bak** file appears in the **Backup** folder inside the **sql-backup** container.
 
    ![](img/Lab01/img36.png)
 
 ---
 
-## Task 4: Create an Azure Database Migration Service instance
+## Task 4: Assign roles to the user and the managed identity
 
-In this task, you create the Azure Database Migration Service instance that orchestrates the migration.
+In this task, you assign the **Storage Blob Data Reader** role on the storage account to two identities: your lab user account and the managed identity of the Azure SQL Managed Instance.
 
-1. Go to `https://portal.azure.com/auth/login/` and sign in with your Azure credentials.
-
-1. In the Azure portal, in the top **Search** bar, type **Azure Database Migration Services (1)**, and then select it from the results **(2)**.
-
-   ![](img/Lab01/img37.png)
-
-1. Select **All resources** from the left pane, and then click on **+ Create**.
-
-   ![](img/Lab01/img38.png)
-
-1. On the **Select migration scenario and Database Migration Service** screen, set the following values:
-
-   - **Source server type (1)**: select **SQL Server**.
-   - **Target server type (2)**: select **Azure SQL Managed Instance**.
-   - **Database Migration Service (3)**: select **Database Migration Service**.
-   - Click on **Select (4)**.
-
-   ![](img/Lab01/img39.png)
-
-1. On the **Create Migration Service** > **Basics** tab, enter the following values, select **Review + create**, click on **Create**, and then wait for the deployment to finish. This takes a few minutes.
-
-   - **Subscription:** The lab subscription
-   - **Resource group:** **ODL-tailspin-<inject key="DeploymentID" enableCopy="false"/>-tailspin**
-   - **Migration service name:** **tailspin-sql-migration**
-   - **Location:** **Central US**
-
-   > **Note:** Create the migration service in the **same region (Central US)** as the storage account and the Managed Instance.
-
-   ![](img/Lab01/img40.png)
-
-1. After the deployment completes, click on the **Go to resource** button.
-
-   ![](img/Lab01/img41.png)
-
----
-
-## Task 5: Assign roles to the user and the managed identity
-
-In this task, you assign the **Storage Blob Data Reader** role on the storage account to two identities: your lab user account and the managed identity of the Azure SQL Managed Instance. Both identities need read access to the blob container so that Azure Database Migration Service can read the backup file during the migration in the next task.
-
-1. Go to your storage account named **tailspinsql<random-string>**.
-
-   > **Note:** The storage account name ends with a randomly generated string, so the exact name in your environment differs from the one shown in the screenshot.
+1. In the Azure portal, open your storage account named **storage<inject key="DeploymentID" enableCopy="false"/>**.
 
    ![](img/Lab01/img56.png)
 
@@ -293,15 +246,11 @@ In this task, you assign the **Storage Blob Data Reader** role on the storage ac
 
 ### Assign the role to your lab user account
 
-1. On the **Role** tab of the **Add role assignment** page, enter **storage blob data reader (1)** in the search box, select **Storage Blob Data Reader (2)** from the results, and then click on **Next (3)**.
+1. On the **Role** tab, enter **storage blob data reader (1)** in the search box, select **Storage Blob Data Reader (2)** from the results, and then click on **Next (3)**.
 
    ![](img/Lab01/img58.png)
 
-1. On the **Members** tab, ensure that **User, group, or service principal** is selected for **Assign access to**, and then click on **+ Select members (1)**.
-
-   ![](img/Lab01/img59.png)
-
-1. On the **Select members** pane, enter **odl_user_<inject key="DeploymentID" enableCopy="false"/> (2)** in the search box, select your user account **ODL_User <inject key="DeploymentID" enableCopy="false"/> (3)** from the results, click on the **Select (4)** button, and then click on the **Review + assign** button.
+1. On the **Members** tab, ensure that **User, group, or service principal (1)** is selected for **Assign access to**, and then click on **+ Select members (2)**. On the **Select members** pane, enter **odl_user_<inject key="DeploymentID" enableCopy="false"/> (3)** in the search box, select your user account **ODL_User <inject key="DeploymentID" enableCopy="false"/> (4)** from the results, click on the **Select (5)** button, and then click on the **Review + assign (6)** button.
 
    ![](img/Lab01/img59.png)
 
@@ -319,30 +268,28 @@ In this task, you assign the **Storage Blob Data Reader** role on the storage ac
 
    ![](img/Lab01/img58.png)
 
-1. On the **Members** tab, select **Managed identity (1)** for **Assign access to**, and then click on **+ Select members (2)**.
-
-   ![](img/Lab01/img60.png)
-
-1. On the **Select managed identities** pane, set the following values:
+1. On the **Members** tab, select **Managed identity (1)** for **Assign access to**, and then click on **+ Select members (2)**. On the **Select managed identities** pane, set the following values:
 
    - **Subscription:** leave the default subscription selected.
-   - **Managed identity (2)**: select **SQL managed instance** from the drop-down list.
-   - Under **Selected members (3)**, confirm that **sqlmi-hol** is listed.
-   - Click on the **Select (4)** button, and then click on the **Review + assign (5)** button.
+   - **Managed identity (3)**: select **SQL managed instance** from the drop-down list.
+   - Under **Selected members (4)**, confirm that **sqlmi-hol** is listed.
+   - Click on the **Select (5)** button, and then click on the **Review + assign (6)** button.
+
+   > **Note:** This second assignment is the one that matters for the migration. Azure Database Migration Service reads the backup file using the Managed Instance's identity, not yours. Without it, the migration fails at the data source configuration step.
 
    ![](img/Lab01/img60.png)
 
 1. On the **Review + assign** tab, review the details and click on the **Review + assign** button again to confirm the assignment.
 
-You have now granted both your lab user account and the SQL Managed Instance read access to the storage account. In the next task, you migrate the database using Azure Database Migration Service.
+You have now granted both your lab user account and the SQL Managed Instance read access to the storage account.
 
 ---
 
-## Task 6: Migrate the database to Azure SQL Managed Instance
+## Task 5: Migrate the database to Azure SQL Managed Instance
 
-In this task, you use the Database Migration Service to restore the backup into the Managed Instance and complete the migration.
+In this task, you use Azure Database Migration Service to restore the backup into the Managed Instance and complete the migration.
 
-1. Open the **tailspin-sql-migration** service that you created in Task 4.
+1. In the Azure portal, open your resource group **tailspin-<inject key="DeploymentID" enableCopy="false"/>**, and then select the **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** migration service.
 
    ![](img/Lab01/img41.png)
 
@@ -357,9 +304,11 @@ In this task, you use the Database Migration Service to restore the backup into 
    - Backup file storage location: **Blob storage (3)**
    - Migration mode: **Online (4)**
 
+   > **Note:** In **Online** mode, the migration keeps syncing until you complete the cutover, so the source database stays available throughout. The migration remains at **Ready for cutover** until you finish it in step 9.
+
    ![](img/Lab01/img43.png)
 
-1. On the **Source details** tab, enter the details for the source SQL Server, and then select **Next**:
+1. On the **Source details** tab, enter the details for the source SQL Server, and then select **Next: Select migration target (5)**:
 
    - Under **Source details**, select **No** for **Is your source SQL Server instance tracked in Azure?**
    - **Source Infrastructure Type (1)**: select **Virtual Machine**.
@@ -367,28 +316,28 @@ In this task, you use the Database Migration Service to restore the backup into 
    - **Resource group (2)**: select the resource group containing your source SQL Server.
    - **Location (3)**: **Central US**
    - **SQL Server Instance Name (4)**: **tailspin-onprem-sql-server**
-   - Click on **Next: Select migration target (5)**.
 
-   > **Note:** Because the backups are already in an Azure blob container, you do **not** need a self-hosted integration runtime for this migration.
+   > **Note:** Because the backups are already in an Azure blob container, you do not need a self-hosted integration runtime for this migration.
 
    ![](img/Lab01/img44.png)
 
-1. On the **Select migration target** tab, select the following values, and then select **Next**:
+1. On the **Select migration target** tab, select the following values, and then select **Next: Data source configuration >>**:
 
    - **Subscription:** The lab subscription
    - **Resource group:** keep the default
    - **Target Azure SQL Managed Instance:** **sqlmi-hol**
-   - Click on **Next: Data source configuration >>**
 
    ![](img/Lab01/img45.png)
 
 1. On the **Data source configuration** tab, provide the blob details **(1)** for the location where you uploaded the backup, and then select **Next: Database migration summary >> (2)**:
 
-   - Resource group: **ODL-tailspin-<inject key="DeploymentID" enableCopy="false"/>-tailspin**
-   - Storage account: **tailspinsql...**
+   - Resource group: **tailspin-<inject key="DeploymentID" enableCopy="false"/>**
+   - Storage account: **storage<inject key="DeploymentID" enableCopy="false"/>**
    - Blob container: **sql-backup**
    - Folder: **Backup**
-   - Target database: **WideWorldImporters**
+   - Target database: **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>**
+
+   > **Note:** Make sure you enter the target database name with your deployment ID, exactly as shown above. You can copy the exact value from **Your Target Database Name** on the **Environment** tab.
 
    ![](img/Lab01/img46.png)
 
@@ -396,11 +345,11 @@ In this task, you use the Database Migration Service to restore the backup into 
 
    ![](img/Lab01/img47.png)
 
-1. The migration begins. Select the **WideWorldImporters** migration to open the monitoring page and watch the progress.
+1. The migration begins. Select the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** migration to open the monitoring page and watch the progress.
 
    ![](img/Lab01/img48.png)
 
-1. Once the migration is ready to cut over, click on the **database** icon.
+1. Once the migration status shows **Ready for cutover**, click on the **database** icon.
 
    ![](img/Lab01/img50.png)
 
@@ -418,11 +367,11 @@ In this task, you use the Database Migration Service to restore the backup into 
 
 ---
 
-## Task 7: Verify the migrated database
+## Task 6: Verify the migrated database
 
-In this task, you confirm that the WideWorldImporters database is online on the Managed Instance.
+In this task, you confirm that the migrated database is online on the Managed Instance.
 
-1. In the Azure portal top **Search** bar, type **SQL managed instances (1)**, and then select it **(2)**.
+1. In the Azure portal **Search** bar, type **SQL managed instances (1)**, and then select it **(2)**.
 
    ![](img/Lab01/img53.png)
 
@@ -430,20 +379,17 @@ In this task, you confirm that the WideWorldImporters database is online on the 
 
    ![](img/Lab01/img54.png)
 
-1. On the left menu, under **Settings**, select **SQL databases**. Confirm that the **WideWorldImporters** database is listed with a status of **Online**.
+1. On the left menu, under **Settings**, select **SQL databases**. Confirm that the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** database is listed with a status of **Online**.
 
    ![](img/Lab01/img55.png)
-
----
 
 ## 🧾 Summary
 
 In this exercise, you accomplished the following:
 
 - Reviewed how the target Azure SQL Managed Instance is provisioned.
-- Backed up the on-premises WideWorldImporters database using SSMS.
+- Backed up the on-premises WideWorldImporters database using SQL Server Management Studio.
 - Uploaded the backup to an Azure Blob Storage container.
-- Created an Azure Database Migration Service instance.
 - Assigned the required storage roles to your user account and the Managed Instance.
 - Migrated the database to Azure SQL Managed Instance and completed the cutover.
 - Verified that the migrated database is online.
