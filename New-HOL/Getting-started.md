@@ -128,6 +128,75 @@ Use the **slider (three vertical dots)** located between the Virtual Machine and
 
    ![](img/Gettingstarted/img8.png)
 
+## 🔎 Know Your Resources
+
+Before you begin the exercises, take a few minutes to understand the environment that has been deployed for you. Everything you work with in this lab lives in two resource groups, and knowing what each resource is for will make the exercises easier to follow.
+
+1. In the Azure portal, open **Resource groups**. You will see the two resource groups used by this lab:
+
+   - **tailspin-<inject key="DeploymentID" enableCopy="false"/>**
+   - **SQLMI-SHARED-RG-PROD**
+
+      ![](img/Gettingstarted/RGS.png)
+
+### Resource group 1: tailspin-<inject key="DeploymentID" enableCopy="false"/>
+
+This is your own resource group. Everything in it was deployed for you and belongs only to your lab environment. It represents the simulated on-premises datacentre for Tailspin Toys, plus the Azure services you use to migrate it.
+
+   ![](img/Gettingstarted/RGTail.png)
+
+| Resource | Type | Why it is in this lab |
+| --- | --- | --- |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm** | Virtual machine | The simulated on-premises SQL Server. It holds the **WideWorldImporters** database that you back up and migrate in Exercise 1. This is also the virtual machine you are working on right now. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-vm** | Virtual machine | The simulated on-premises Hyper-V host. A nested virtual machine named **OnPremVM** runs inside it, and that nested machine is the server you Azure Arc-enable in Exercise 3. Nested virtualization lets the lab simulate a physical on-premises server without any hardware. |
+| **storage<inject key="DeploymentID" enableCopy="false"/>** | Storage account | Contains the **sql-backup** blob container. In Exercise 1 you upload the database backup here, because Azure Database Migration Service reads the source backup from blob storage rather than from the server. |
+| **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** | Azure Database Migration Service | The service that orchestrates the migration in Exercise 1. It reads the backup from blob storage and restores it into the Managed Instance. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-nic**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-nic** | Network interface | Connects each virtual machine to the shared virtual network. Note that both attach to a virtual network in the *other* resource group, which is what allows the virtual machines to reach the Managed Instance privately. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-nsg**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-nsg** | Network security group | Controls inbound traffic to each virtual machine. RDP on port 3389 is allowed so you can connect, port 1433 is allowed to the SQL Server virtual machine, and port 2179 is allowed to the Hyper-V host for Virtual Machine Connection. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-sql-pip**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-hyperv-pip** | Public IP address | Gives each virtual machine a public address and DNS name. These are listed on the **Environment** tab. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm_disk1**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-vm_OsDisk** | Managed disk | The operating system disk for each virtual machine. The Hyper-V host disk is larger because it stores the nested virtual machine's virtual hard disk as well as its own operating system. |
+
+> **Note:** You will also create one more virtual machine in this resource group during Exercise 2, named **tailspin-webapp-vm**. It does not exist yet.
+
+### Resource group 2: SQLMI-SHARED-RG-PROD
+
+This resource group holds the Azure SQL Managed Instance and the network it lives in. It was created before your lab started, because provisioning a Managed Instance can take up to six hours. You have read access to it so that you can select the Managed Instance as the migration target in Exercise 1.
+
+![](img/Gettingstarted/RGSQL.png)
+
+| Resource | Type | Why it is in this lab |
+| --- | --- | --- |
+| **sqlmi-hol** | SQL managed instance | The destination for the database migration in Exercise 1. This is the fully managed platform as a service version of SQL Server, where Microsoft handles patching, backups, and high availability. |
+| **vnet-sqlmi-hol** | Virtual network | The network that contains both the Managed Instance and your lab virtual machines. Because they share a virtual network, traffic between them stays on the Azure backbone and never crosses the public internet. |
+| **nsg-sqlmi-hol** | Network security group | Applied to the Managed Instance subnet. Azure requires a network security group on any subnet that hosts a Managed Instance. |
+| **rt-sqlmi-hol** | Route table | Also applied to the Managed Instance subnet, and also required by Azure. It directs Managed Instance management traffic correctly. |
+| **vnet-sqlmi-hol-bastion** | Bastion | Provides the secure browser-based RDP sessions you use to connect to the virtual machines in Exercises 2 and 3, without any virtual machine needing an open RDP port on the internet. |
+| **VirtualCluster...** | Virtual cluster | Created automatically by Azure when the Managed Instance was deployed. It is part of the Managed Instance infrastructure and is not something you interact with. |
+
+### How the network is laid out
+
+The virtual network **vnet-sqlmi-hol** is divided into subnets, and each one has a specific purpose:
+
+| Subnet | Address range | What uses it |
+| --- | --- | --- |
+| **ManagedInstance** | 10.0.0.0/24 | The SQL Managed Instance. This subnet is *delegated* to the Managed Instance service, which means no other resource type can be placed in it. |
+| **Managed** | 10.0.1.0/24 | Your lab virtual machines, and the web application virtual machine you create in Exercise 2. |
+| **DMS** | 10.0.2.0/24 | Reserved for Azure Database Migration Service. |
+| **AzureBastionSubnet** | 10.0.3.0/26 | Azure Bastion. This subnet must carry exactly this name, which is a requirement of the Bastion service. |
+
+> **Note:** This layout is the reason the migration works over a private connection. Because your virtual machines sit in the **Managed** subnet and the Managed Instance sits in the **ManagedInstance** subnet of the same virtual network, they reach each other on port **1433** over the private endpoint. Had they been in separate virtual networks, the Managed Instance would only have been reachable over its public endpoint on port 3342.
+
+### Where each resource is used
+
+| Exercise | Resources you work with |
+| --- | --- |
+| **Exercise 1** | The SQL Server virtual machine, the storage account, the Database Migration Service, and the Managed Instance. |
+| **Exercise 2** | A new virtual machine that you create, the shared virtual network, and Azure Bastion. |
+| **Exercise 3** | The Hyper-V host virtual machine, the nested OnPremVM inside it, and Azure Arc. |
+
+> **Note:** Take a moment to open both resource groups in the Azure portal and match what you see against the tables above. Recognising these names now will save you time in every exercise that follows.
+
+
 ## 📞 Support Contact
 
 The CloudLabs support team is available 24/7, 365 days a year, via email and live chat to ensure seamless assistance at any time. We offer dedicated support channels tailored specifically for both learners and instructors, ensuring that all your needs are promptly and efficiently addressed.

@@ -383,6 +383,71 @@ In this task, you confirm that the migrated database is online on the Managed In
 
    ![](img/Lab01/img55.png)
 
+## Task 7: Migration tooling and cutover planning **(Read-Only)**
+
+> **Note:** This is a **Read-Only** task. There are no steps to perform. Read through it to understand the options available for migrating a SQL Server database to Azure, and why this lab used the one it did.
+
+You migrated WideWorldImporters using Azure Database Migration Service in online mode. That was one of several routes available. This task covers the alternatives, when each one is appropriate, and how a real cutover is planned.
+
+### The available migration paths
+
+| Method | How it works | Downtime | When to use it |
+| --- | --- | --- | --- |
+| **Database Migration Service — offline** | Restores a full backup into the target. No further syncing takes place. | The full duration of the restore | Databases that can be taken offline for the length of the restore, such as reporting databases or anything migrated over a weekend. |
+| **Database Migration Service — online** | Restores the full backup, then continuously applies log backups until you complete the cutover. | Minutes, at cutover only | Production databases that cannot be offline for hours. This is what you used in this lab. |
+
+
+**Why online mode was used here.** The Tailspin Toys database backs a live e-commerce application. An offline migration would have meant taking orders offline for as long as the restore took, and that duration is not known in advance for a database of any size. Online mode restores the bulk of the data while the source stays in use, then applies only the final changes at cutover.
+
+> **Note:** Online mode is why the migration sat at **Ready for cutover** rather than completing on its own. The service was waiting for you to decide when the switch happened. In a real migration, that decision is made by the business, not by the engineer running the tool.
+
+### What happens at cutover
+
+The cutover is the only moment in an online migration where the application is affected. It follows a fixed sequence:
+
+1. **Stop application traffic to the source database.** New transactions must stop, otherwise changes made after the final backup are lost.
+2. **Take the final transaction log backup** on the source and make it available to the migration service.
+3. **Complete the cutover** in the portal. The service applies the final log backup and brings the target database online.
+4. **Repoint the application** to the Managed Instance by updating its connection string.
+5. **Verify** that the application works against the new database before allowing traffic back in.
+6. **Allow application traffic to resume.**
+
+In this lab you selected a checkbox confirming there were no further log backups to apply, because nothing was writing to the source database. In production, step 1 and step 2 are the part that requires coordination with the business, and the window is usually agreed weeks in advance.
+
+> **Note:** The source database is not deleted at cutover. Keeping it in place, read-only, for an agreed period is normal practice. It gives the organization a way back if something is found after the switch.
+
+### Planning the cutover window
+
+Three things determine how long the window needs to be:
+
+- **How long the final log backup takes to apply.** In an online migration this is usually seconds to a few minutes, because the bulk of the data was already restored.
+- **How long application verification takes.** This is often the longest part, and it depends on how much of the application is tested before traffic is allowed back.
+- **How long a rollback would take** if verification fails. The window has to be long enough to include a rollback, not just the migration.
+
+A typical production cutover for a database of this size runs in the low tens of minutes, and is scheduled outside business hours.
+
+### Tools that no longer apply
+
+Two tools appear in older guidance and are worth knowing about, because they still turn up in search results:
+
+- **Data Migration Assistant (DMA)** was used to assess a source database for compatibility issues before migrating. Its assessment role is now covered by Azure Migrate.
+- **The Azure SQL Migration extension for Azure Data Studio** provided a desktop interface for the same Database Migration Service you used in this lab. The service itself is unchanged; only the interface was retired.
+
+Both were retired by Microsoft on **28 February 2026**. The Azure portal experience you used in this exercise is the current supported path.
+
+### Summary of the choice
+
+For the Tailspin Toys migration, the decision was straightforward once the constraints were written down:
+
+| Constraint | Consequence |
+| --- | --- |
+| Production database backing a live application | Offline migration ruled out |
+| Backup already staged in blob storage | No self-hosted integration runtime required |
+| Single database, moderate size | Managed Instance link unnecessarily complex |
+| Migration needs to be auditable and repeatable | Portal-based Database Migration Service preferred over a manual restore |
+
+The result is the path you followed: an online migration through Azure Database Migration Service, reading the backup from blob storage, with a cutover controlled by the engineer.
+
 ## 🧾 Summary
 
 In this exercise, you accomplished the following:
