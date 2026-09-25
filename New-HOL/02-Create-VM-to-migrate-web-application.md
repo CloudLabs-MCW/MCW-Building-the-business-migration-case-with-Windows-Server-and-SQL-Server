@@ -91,8 +91,6 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    ![](img/Lab02/img7.png)
 
----
-
 ## Task 2: Connect to the virtual machine using Azure Bastion
 
 Because the virtual machine has no public IP address, you cannot connect to it directly over the internet. In this task, you use Azure Bastion to open a secure RDP session from inside the Azure portal.
@@ -183,6 +181,112 @@ Two settings on this virtual machine affect what Tailspin Toys pays for it, and 
 
 - **Azure Hybrid Benefit**, available on the virtual machine's **Configuration** page, lets the organization apply its existing Windows Server licences with active Software Assurance to this virtual machine. The Azure bill then covers only the compute cost rather than the compute plus a new licence.
 - **Hotpatching**, included with Windows Server Datacenter: Azure Edition, applies security updates to running processes in memory. The server restarts only for the quarterly baseline updates, which reduces both downtime and the operational effort of scheduling maintenance windows.
+
+## Task 4: Verify connectivity to the migrated database
+
+Task 3 explained that placing this virtual machine in **vnet-sqlmi-hol** is what allows the application to reach the Managed Instance privately. In this task you prove it, by connecting from the new application server to the database you migrated in Exercise 1.
+
+1. Return to the Azure Bastion session for **tailspin-webapp-vm**. If you closed it, reconnect using the steps in Task 2.
+
+1. Copy the following values from the **Environment** tab of your lab environment. You will need them in the next two steps.
+
+   - **SQL MI Host**
+   - **SQL MI Admin Login**
+   - **SQL MI Admin Password**
+   - **Your Target Database Name**
+
+   ![](img/Lab02/img11.png)
+
+1. On the virtual machine, click on the **Windows Start** button **(1)**, type **PowerShell (2)**, right-click on **Windows PowerShell (3)**, and then select **Run as administrator (4)**.
+
+   ![](img/Lab02/img12.png)
+
+1. In the PowerShell window, run the following command, replacing `<SQL MI Host>` with the value you copied in step 2:
+
+   ```powershell
+   Test-NetConnection -ComputerName "<SQL MI Host>" -Port 1433
+   ```
+
+   ![](img/Lab02/img13.png)
+
+1. Confirm that the output shows **TcpTestSucceeded : True**.
+
+   > **Note:** This is the proof of what Task 3 described. The connection uses port **1433**, which is the Managed Instance private endpoint. If this virtual machine had been created in a different virtual network, this test would fail and the application would have to use the public endpoint on port 3342 instead.
+
+   ![](img/Lab02/img14.png)
+
+1. Now query the migrated database directly. In the same PowerShell window, paste the following script, replacing the three placeholder values with the ones you copied in step 2, and then press the **Enter** key:
+
+   ```powershell
+   $server   = "<SQL MI Host>"
+   $database = "<Your Target Database Name>"
+   $login    = "<SQL MI Admin Login>"
+   $password = "<SQL MI Admin Password>"
+
+   $connectionString = "Server=tcp:$server,1433;Database=$database;User ID=$login;Password=$password;Encrypt=True;TrustServerCertificate=True;"
+   $connection = New-Object System.Data.SqlClient.SqlConnection($connectionString)
+   $connection.Open()
+
+   $command = $connection.CreateCommand()
+   $command.CommandText = "SELECT @@VERSION"
+   $command.ExecuteScalar()
+
+   $command = $connection.CreateCommand()
+   $command.CommandText = "SELECT COUNT(*) FROM sys.tables"
+   "Tables in the migrated database: " + $command.ExecuteScalar()
+
+   $connection.Close()
+   ```
+
+   ![](img/Lab02/img15.png)
+
+1. Review the output. The version string begins with **Microsoft SQL Azure**, followed by the number of tables in the migrated database.
+
+   > **Note:** The version string confirms you are connected to Azure SQL Managed Instance and not to the original on-premises SQL Server, which would report **Microsoft SQL Server 2019**. The table count confirms that the migration you completed in Exercise 1 brought the schema across intact.
+
+   > **Note:** The connection string in this script is the same one described in Task 3. In a real migration, this exact value replaces the on-premises connection string in the application's configuration file.
+
+   ![](img/Lab02/img16.png)
+
+## Task 5: Review Azure Edition benefits
+
+Task 3 described two settings that affect what Tailspin Toys pays for this virtual machine. In this task you find both of them in the portal.
+
+### Review the Hotpatch status
+
+1. In the Azure portal, open the **tailspin-webapp-vm** virtual machine.
+
+1. On the left navigation pane, under **Operations**, select **Updates**.
+
+   ![](img/Lab02/img17.png)
+
+1. Review the **Patch orchestration** and **Hotpatch** settings shown on this page.
+
+   > **Note:** Hotpatching is enabled by default on Windows Server 2025 Datacenter: Azure Edition virtual machines running in Azure, at no additional cost. Security updates are applied to the in-memory code of running processes, so the server does not restart. Restarts are still required for the quarterly baseline updates released in January, April, July, and October.
+
+   ![](img/Lab02/img18.png)
+
+1. Select **Check for updates** to run a one-time assessment of the operating system updates this virtual machine is missing.
+
+   > **Note:** The assessment takes a few minutes to complete. You do not need to wait for it or install anything.
+
+   ![](img/Lab02/img19.png)
+
+### Review Azure Hybrid Benefit
+
+1. On the **tailspin-webapp-vm** page, under **Settings**, select **Configuration**.
+
+   ![](img/Lab02/img20.png)
+
+1. Locate the **Azure Hybrid Benefit** section and review the licensing options available for this virtual machine.
+
+   > **Note:** Azure Hybrid Benefit lets an organization apply existing Windows Server licences with active Software Assurance to Azure virtual machines. The Azure bill then covers only the compute cost rather than the compute plus a new licence. For Tailspin Toys, this is a significant part of the financial case for migrating rather than refreshing on-premises hardware.
+
+   ![](img/Lab02/img21.png)
+
+1. Do not change this setting. Reviewing the option is sufficient for this lab.
+
+   > **Note:** Enabling Azure Hybrid Benefit is a licensing declaration. An organization confirms it holds the required licences before turning it on.
 
 ## Troubleshooting
 
