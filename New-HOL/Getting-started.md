@@ -24,6 +24,8 @@ By the end of this lab, you will be able to:
 
 - **Exercise 3 - Azure Arc-enable an on-premises VM:** Generate and run the Azure Arc onboarding script to connect an on-premises Windows Server virtual machine to Azure, enabling unified management through Azure Arc.
 
+- **Exercise 4 - Knowledge Check:** 
+
 ## ⚙️ Prerequisites
 
 Participants should have:
@@ -185,17 +187,6 @@ The virtual network **vnet-sqlmi-hol** is divided into subnets, and each one has
 | **AzureBastionSubnet** | 10.0.3.0/26 | Azure Bastion. This subnet must carry exactly this name, which is a requirement of the Bastion service. |
 
 > **Note:** This layout is the reason the migration works over a private connection. Because your virtual machines sit in the **Managed** subnet and the Managed Instance sits in the **ManagedInstance** subnet of the same virtual network, they reach each other on port **1433** over the private endpoint. Had they been in separate virtual networks, the Managed Instance would only have been reachable over its public endpoint on port 3342.
-
-### Where each resource is used
-
-| Exercise | Resources you work with |
-| --- | --- |
-| **Exercise 1** | The SQL Server virtual machine, the storage account, the Database Migration Service, and the Managed Instance. |
-| **Exercise 2** | A new virtual machine that you create, the shared virtual network, and Azure Bastion. |
-| **Exercise 3** | The Hyper-V host virtual machine, the nested OnPremVM inside it, and Azure Arc. |
-
-> **Note:** Take a moment to open both resource groups in the Azure portal and match what you see against the tables above. Recognising these names now will save you time in every exercise that follows.
-
 
 ## 📞 Support Contact
 

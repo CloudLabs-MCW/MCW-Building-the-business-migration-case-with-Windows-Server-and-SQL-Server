@@ -220,18 +220,6 @@ The left menu of the Arc machine lists what you can now do with this server from
 
 None of these required the server to move to Azure. They became available the moment the agent connected.
 
-### Comparing the three workloads
-
-You have now placed the three parts of the Tailspin Toys estate under Azure management in three different ways:
-
-| Workload | Where it runs | What you did |
-| --- | --- | --- |
-| WideWorldImporters database | Azure SQL Managed Instance | Migrated it in Exercise 1 |
-| Web application host | Windows Server virtual machine in Azure | Created it in Exercise 2 |
-| On-premises server | Inside the Hyper-V host | Arc-enabled it in Exercise 3 |
-
-The first two were migrated. The third was not, and does not need to be. It stays where it is, and Tailspin Toys still manages it from the Azure portal alongside everything else. That is the outcome the migration plan set out to achieve.
-
 ## 🧾 Summary
 
 In this exercise, you accomplished the following:
@@ -242,19 +230,6 @@ In this exercise, you accomplished the following:
 
 You have now completed the full migration story for Tailspin Toys. The database tier runs on Azure SQL Managed Instance, the application tier runs on a Windows Server virtual machine in Azure, and the server that stays on-premises is managed from Azure through Azure Arc.
 
-## Troubleshooting
-
-**The script reports "Cannot install Azure Connected Machine agent on an Azure Virtual Machine."**
-The script is running on the Hyper-V host instead of the nested virtual machine. Open **Hyper-V Manager**, connect to **OnPremVM**, and run the script inside that session.
-
-**The script fails to download the agent, or reports a network error.**
-OnPremVM has no internet access. Follow the Internet Connection Sharing note in step 8, then run the script again.
-
-**The authentication window returns error AZCM0042.**
-You signed in with a personal Microsoft account. Sign in with the organization account provided for this lab instead.
-
-**The Arc machine does not appear in the resource group.**
-Wait five minutes and select **Refresh**. Also confirm that you selected the correct resource group in Task 1, step 5.
 
 ### You have successfully completed the lab!
 

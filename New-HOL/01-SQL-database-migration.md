@@ -59,15 +59,14 @@ In this task, you create a full backup of the WideWorldImporters database using 
 
 > **Note:** The lab virtual machine you are already working on is **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**, the simulated on-premises SQL Server that holds the source database. You do not need to connect to any other machine for this task.
 
-1. On the lab virtual machine, click on the **Windows Start** button **(1)**, type **SQL Server Management Studio (2)**, and then select **Microsoft SQL Server Management Studio (3)** from the search results.
+1. On the lab virtual machine, click on the **Windows Start** button, type **SQL Server Management Studio (1)**, and then select **Microsoft SQL Server Management Studio 22 (2)** from the search results.
 
-   > **Note:** SQL Server Management Studio can take up to a minute to open the first time you launch it.
+   > **Note:** SQL Server Management Studio 22 can take up to a minute to open the first time you launch it.
 
    ![](img/Lab01/img11.png)
 
 1. In the **Connect to Server** dialog box, enter the following values, and then select **Connect (4)**:
 
-   - **Server type:** Database Engine
    - **Server name (1)**: **localhost**
    - **Authentication (2)**: **Windows Authentication**
    - **Trust server certificate (3)**: selected
@@ -204,11 +203,15 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img30.png)
 
-1. In the left **Explorer** pane, expand your subscription **(1)**, expand **Storage Accounts**, expand **storage<inject key="DeploymentID" enableCopy="false"/>**, expand **Blob Containers**, and then select the **sql-backup (2)** container.
+1. On the Microsoft Azure Storage Explorer page click on **Open Explorer.**
+   
+   ![](img/Lab02/imgstor.png)
+
+1. In the left **Explorer** pane, expand your **subscription (1)**, expand **Storage Accounts**, expand **storage<inject key="DeploymentID" enableCopy="false"/>**, expand **Blob Containers**, and then select the **sql-backup (2)** container.
 
    ![](img/Lab01/img31.png)
 
-1. Select **Upload (1)**, and then select **Directory (2)**.
+1. Select **Upload (1)**, and then select **Upload Directory (2)**.
 
    > **Note:** Upload the **Backup** folder, not the individual `.bak` file. Azure Database Migration Service reads the backup from a folder inside the container, and only folders one level deep are supported.
 
@@ -236,9 +239,13 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
 In this task, you assign the **Storage Blob Data Reader** role on the storage account to two identities: your lab user account and the managed identity of the Azure SQL Managed Instance.
 
-1. In the Azure portal, open your storage account named **storage<inject key="DeploymentID" enableCopy="false"/>**.
+1. In the azure portal serach for **Storage (1)** and Select the **Storage Accounts (2)**.
 
-   ![](img/Lab01/img56.png)
+   ![](img/Lab01/imgstor1.png)
+
+1. On the storage account page, open your storage account named **storage<inject key="DeploymentID" enableCopy="false"/>**.
+
+   ![](img/Lab01/imgstora.png)
 
 1. On the storage account page, select **Access Control (IAM) (1)** from the left navigation pane, select **+ Add (2)**, and then click on **Add role assignment (3)**.
 
@@ -289,9 +296,9 @@ You have now granted both your lab user account and the SQL Managed Instance rea
 
 In this task, you use Azure Database Migration Service to restore the backup into the Managed Instance and complete the migration.
 
-1. In the Azure portal, open your resource group **tailspin-<inject key="DeploymentID" enableCopy="false"/>**, and then select the **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** migration service.
+1. In the Azure portal, open your Azure Database Migration resource and then select the **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** migration service.
 
-   ![](img/Lab01/img41.png)
+   ![](img/Lab01/azdms.png)
 
 1. On the **Overview** pane of the migration service, select **New migration**.
 
@@ -345,7 +352,7 @@ In this task, you use Azure Database Migration Service to restore the backup int
 
    ![](img/Lab01/img47.png)
 
-1. The migration begins. Select the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** migration to open the monitoring page and watch the progress.
+1. The migration begins. Select the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/> (---)** migration to open the monitoring page and watch the progress.
 
    ![](img/Lab01/img48.png)
 
