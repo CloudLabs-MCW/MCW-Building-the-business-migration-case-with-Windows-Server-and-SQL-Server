@@ -1,6 +1,6 @@
 # Exercise 3: Azure Arc-enable on-premises VM
 
-### Estimated Duration: 60 Minutes
+### Estimated Duration: 90 Minutes
 
 ## 📘 Lab Scenario
 
@@ -19,8 +19,6 @@ In this exercise, you will complete the following tasks:
 - **Task 1:** Generate the Azure Arc onboarding script
 - **Task 2:** Run the script on the on-premises virtual machine
 - **Task 3:** Verify the Azure Arc-enabled server
-
----
 
 ## Task 1: Generate the Azure Arc onboarding script
 
@@ -65,13 +63,11 @@ In this task, you use the Azure portal to generate the onboarding script that in
 
    ![](img/Lab03/img6.png)
 
----
-
 ## Task 2: Run the script on the on-premises virtual machine
 
 In this task, you connect to the simulated on-premises server and run the onboarding script on it. The script installs the Azure Connected Machine agent and registers the server with Azure.
 
-1. In the Azure portal, open the resource group **tailspin-<inject key="DeploymentID" enableCopy="false"/>**.
+1. In the Azure portal, search for **Virtual machines**, or select it from **Azure Services**.
 
    ![](img/Lab03/img7.png)
 
@@ -147,8 +143,6 @@ In this task, you connect to the simulated on-premises server and run the onboar
 
    ![](img/Lab03/img17.png)
 
----
-
 ## Task 3: Verify the Azure Arc-enabled server
 
 In this task, you confirm that the on-premises server now appears in Azure and can be managed from the portal.
@@ -181,6 +175,8 @@ When the onboarding script finished, Azure created a resource for **OnPremVM** i
 
 The **Overview** page of the Arc machine shows the details that the Azure Connected Machine agent reported back to Azure:
 
+![](img/Lab03/arc1.png)
+
 | Field | What it tells you |
 | --- | --- |
 | **Status** | Whether the agent is currently reporting in. **Connected** means Azure heard from the machine recently. |
@@ -196,6 +192,10 @@ The status is based on a heartbeat that the agent sends to Azure. If the server 
 
 Select **JSON View** in the top-right corner of the Overview page. The `id` field at the top is the full Azure Resource ID of the Arc machine, and it follows the same format as any other Azure resource:
 
+![](img/Lab03/arc3.png)
+
+![](img/Lab03/arc2.png)
+
 ```
 /subscriptions/<subscription-id>/resourceGroups/tailspin-<inject key="DeploymentID" enableCopy="false"/>/providers/Microsoft.HybridCompute/machines/OnPremVM
 ```
@@ -205,6 +205,8 @@ The resource provider is **Microsoft.HybridCompute** rather than **Microsoft.Com
 ### The left menu
 
 The left menu of the Arc machine lists what you can now do with this server from Azure. A few of them are worth opening to see what is available:
+
+![](img/Lab03/arc4.png)
 
 - **Extensions** - the same mechanism used to install agents on Azure virtual machines. The list is empty at this point, because the onboarding script installed only the Connected Machine agent itself. Anything installed from here is delivered through that agent.
 
@@ -219,6 +221,26 @@ The left menu of the Arc machine lists what you can now do with this server from
 - **Tags** - the same tagging that Tailspin Toys applies to their Azure resources for cost tracking and ownership.
 
 None of these required the server to move to Azure. They became available the moment the agent connected.
+
+### Why this matters for Tailspin Toys
+
+None of the capabilities above required the server to move to Azure. That is the
+point: a server that cannot move does not have to become an exception to the rest
+of the estate.
+
+- **Patching** — Azure Update Manager assesses and installs updates on the same
+  schedule as the Azure virtual machines.
+- **Security** — Microsoft Defender for Cloud and Azure Policy cover this server
+  the same way they cover Azure resources.
+- **Monitoring** — the Azure Monitor Agent sends logs to the same Log Analytics
+  workspace used elsewhere.
+- **Extended Security Updates** — for Windows Server versions past their support
+  date, ESU is delivered through Azure Arc and billed through the Azure
+  subscription. Windows Server 2016 leaves extended support in January 2027, so
+  this becomes relevant for any older servers Tailspin Toys keeps.
+
+This is the third leg of the migration plan: migrate the database, rehost the
+application, and manage everything else from the same place.
 
 ## 🧾 Summary
 

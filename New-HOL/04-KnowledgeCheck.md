@@ -1,6 +1,6 @@
 # Exercise 04: Knowledge Check
 
-### Estimated Duration: 30 Minutes
+### Estimated Duration: 60 Minutes
 
 ## 📘 Lab Scenario
 
