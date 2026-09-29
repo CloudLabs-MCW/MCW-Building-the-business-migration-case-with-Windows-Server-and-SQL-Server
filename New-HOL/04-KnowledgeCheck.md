@@ -1,4 +1,4 @@
-# Knowledge Check
+# Exercise 04: Knowledge Check
 
 ### Estimated Duration: 30 Minutes
 
@@ -28,11 +28,11 @@ In this exercise, you will complete the following tasks:
 
 These three questions cover why each Tailspin Toys workload was given the target it was given.
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question1.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question1.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question2.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question2.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question3.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question3.md"/>
 
 ---
 
@@ -40,15 +40,15 @@ These three questions cover why each Tailspin Toys workload was given the target
 
 These five questions cover the steps you carried out in Exercise 1 and the decisions behind them.
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question4.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question4.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question5.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question5.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question6.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question6.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question7.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question7.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question8.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question8.md"/>
 
 ---
 
@@ -56,11 +56,11 @@ These five questions cover the steps you carried out in Exercise 1 and the decis
 
 These three questions cover what the verification scripts told you about the migrated database, and why each value matters.
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question9.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question9.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question10.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question10.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question11.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question11.md"/>
 
 ---
 
@@ -68,11 +68,11 @@ These three questions cover what the verification scripts told you about the mig
 
 These three questions cover the network choices you made when creating the application server in Exercise 2.
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question12.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question12.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question13.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question13.md"/>
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question14.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question14.md"/>
 
 ---
 
@@ -80,7 +80,7 @@ These three questions cover the network choices you made when creating the appli
 
 This question covers the on-premises server you brought under Azure management in Exercise 3.
 
-<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question15.md"></question>
+<question source="https://raw.githubusercontent.com/rishabhs-spektra/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/Stage/New-HOL/Questions/question15.md"/>
 
 ---
 
