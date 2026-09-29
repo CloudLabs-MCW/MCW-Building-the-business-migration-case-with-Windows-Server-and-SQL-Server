@@ -28,9 +28,9 @@ In this exercise, you will complete the following tasks:
 
 These three questions cover why each Tailspin Toys workload was given the target it was given.
 
-<question source="https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/refs/heads/Stage/New-HOL/Questions/question1.md"/>
+<question source="https://raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/refs/heads/Stage/New-HOL/Questions/question1.md"></question>
 
-<question source="https://docs-api.cloudlabs.ai/repos/raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/refs/heads/Stage/New-HOL/Questions/question2.md"/>
+<question source="https://docs-api.cloudlabs.ai/repos/raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/refs/heads/Stage/New-HOL/Questions/question2.md"></question>
 
 <question source="https://docs-api.cloudlabs.ai/repos/raw.githubusercontent.com/CloudLabs-MCW/MCW-Building-the-business-migration-case-with-Windows-Server-and-SQL-Server/refs/heads/Stage/New-HOL/Questions/question3.md"/>
 
