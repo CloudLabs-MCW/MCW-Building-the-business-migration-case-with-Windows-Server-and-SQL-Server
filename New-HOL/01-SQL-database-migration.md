@@ -1,6 +1,6 @@
 # Exercise 1: SQL database migration
 
-### Estimated Duration: 120 Minutes
+### Estimated Duration: 180 Minutes
 
 ## 📘 Lab Scenario
 
@@ -22,8 +22,6 @@ In this exercise, you will complete the following tasks:
 - **Task 4:** Assign roles to the user and the managed identity
 - **Task 5:** Migrate the database to Azure SQL Managed Instance
 - **Task 6:** Verify the migrated database
-
----
 
 ## Task 1: Review creation of Azure SQL Managed Instance **(Read-Only)**
 
@@ -50,8 +48,6 @@ The Managed Instance used in this lab was created with the following configurati
 1. All remaining settings were left at their default values, and then **Review + create** and **Create** were selected.
 
    ![](img/Lab01/img7.png)
-
----
 
 ## Task 2: Back up the WideWorldImporters database
 
@@ -152,8 +148,6 @@ In this task, you create a full backup of the WideWorldImporters database using 
 
    ![](img/Lab01/img19.png)
 
----
-
 ## Task 3: Upload the backup to Azure Blob Storage
 
 Azure Database Migration Service reads the source backup from an Azure Storage blob container. In this task, you upload the `.bak` file to the **sql-backup** container using Azure Storage Explorer.
@@ -233,8 +227,6 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img36.png)
 
----
-
 ## Task 4: Assign roles to the user and the managed identity
 
 In this task, you assign the **Storage Blob Data Reader** role on the storage account to two identities: your lab user account and the managed identity of the Azure SQL Managed Instance.
@@ -289,8 +281,6 @@ In this task, you assign the **Storage Blob Data Reader** role on the storage ac
 1. On the **Review + assign** tab, review the details and click on the **Review + assign** button again to confirm the assignment.
 
 You have now granted both your lab user account and the SQL Managed Instance read access to the storage account.
-
----
 
 ## Task 5: Migrate the database to Azure SQL Managed Instance
 
@@ -372,8 +362,6 @@ In this task, you use Azure Database Migration Service to restore the backup int
 
    ![](img/Lab01/img52.png)
 
----
-
 ## Task 6: Verify the migrated database
 
 In this task, you confirm that the migrated database is online on the Managed Instance.
@@ -389,6 +377,8 @@ In this task, you confirm that the migrated database is online on the Managed In
 1. On the left menu, under **Settings**, select **SQL databases**. Confirm that the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** database is listed with a status of **Online**.
 
    ![](img/Lab01/img55.png)
+
+   > **Note:** As `sqlmi-hol` is a shared resource, you may see other databases listed here. Please verify that you are working with the database associated with your deployment ID. For this lab, your target database will be **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>**
 
 ## Task 7: Migration tooling and cutover planning **(Read-Only)**
 

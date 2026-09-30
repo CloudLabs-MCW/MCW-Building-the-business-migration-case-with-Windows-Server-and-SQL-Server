@@ -22,8 +22,6 @@ In this exercise, you will complete the following tasks:
 - **Task 2:** Connect to the virtual machine using Azure Bastion
 - **Task 3:** Verify connectivity to the migrated database
 
----
-
 ## Task 1: Create a Windows Server 2025 Datacenter: Azure Edition virtual machine
 
 In this task, you provision the virtual machine that will host the migrated web application.
@@ -93,8 +91,6 @@ In this task, you provision the virtual machine that will host the migrated web 
    > **Note:** Deployment takes two to three minutes.
 
    ![](img/Lab02/img7.png)
-
----
 
 ## Task 2: Connect to the virtual machine using Azure Bastion
 
@@ -268,8 +264,6 @@ Placing this virtual machine in **vnet-sqlmi-hol** is what allows the applicatio
    > **Note:** The largest tables are the ones that determine how long a migration takes and how much a mistake costs. In a real project, these are the tables whose row counts you compare between source and target before signing off the cutover.
 
    ![](img/Lab02/isesc5.1.png)
-
----
 
 ## 🧾 Summary
 
