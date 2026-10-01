@@ -1,6 +1,6 @@
-# Exercise 05: Protect the SQL Server VM with Azure Backup
+# Exercise 04: Protect the SQL Server VM with Azure Backup
 
-### Estimated Duration: 60 Minutes
+### Estimated Duration: 120 Minutes
 
 ## 📘 Lab Scenario
 
@@ -23,11 +23,9 @@ In this exercise, you will complete the following tasks:
 - **Task 5:** Restore the VM disks from a recovery point
 - **Task 6:** Clean up the backup configuration
 
----
-
 ## Task 1: Register the Recovery Services resource provider
 
-In this task, you confirm that the subscription can create Recovery Services vaults, which is a one-time requirement before Azure Backup can be used.
+In this task, you confirm that the subscription have create Recovery Services vaults, which is a one-time requirement before Azure Backup can be used.
 
 1. In the Azure portal, search for **Subscriptions** and select the subscription.
 
@@ -41,13 +39,11 @@ In this task, you confirm that the subscription can create Recovery Services vau
 
     ![](img/Lab04/img3.png)
 
----
-
 ## Task 2: Create a Recovery Services vault
 
 In this task, you create the Recovery Services vault that will store the SQL Server VM's backups.
 
-1. In the Azure portal, search for **Recovery Services vaults** and select it (2).
+1. In the Azure portal, search for **Recovery Services vaults (1)** and select **Recovery Services vaults (2)**
 
     ![](img/Lab04/img4.png)
 
@@ -60,7 +56,7 @@ In this task, you create the Recovery Services vault that will store the SQL Ser
    - **Subscription (1):** Use the default subscription
    - **Resource group (2):** **tailspin-<inject key="DeploymentID" enableCopy="false"/>**
    - **Vault name (3):** **rsv-tailspin-<inject key="DeploymentID" enableCopy="false"/>**
-   - **Region (4):** The same region as the SQL Server VM
+   - **Region (4):** Central US
 
    ![](img/Lab04/img6.png)
 
@@ -72,13 +68,11 @@ In this task, you create the Recovery Services vault that will store the SQL Ser
 
     ![](img/Lab04/img8.png)
 
-1. On the **Backup Configuration** pane, set **Storage replication type** to **Locally-redundant (1)**, and select **Save (2)**.
+1. On the **Backup Configuration** pane, set **Storage replication type** to **Locally-redundant (1)**, and select **Apply (2)**.
 
     ![](img/Lab04/img10.png)
 
     > **Note:** The replication type must be set before the first item is protected. It cannot be changed afterwards.
-
----
 
 ## Task 3: Create a backup policy and enable backup
 
@@ -88,7 +82,7 @@ In this task, you define how often backups run and how long they are kept, and t
 
     ![](img/Lab04/img11.png)
 
-1. Select **+ Add**.
+1. Click on **+ Add**.
 
     ![](img/Lab04/img12.png)
 
@@ -125,8 +119,6 @@ In this task, you define how often backups run and how long they are kept, and t
 
     ![](img/Lab04/img18.png)
 
----
-
 ## Task 4: Run an on-demand backup
 
 In this task, you trigger an immediate backup instead of waiting for the daily schedule, so you have a recovery point to restore from in Task 5.
@@ -160,8 +152,6 @@ In this task, you trigger an immediate backup instead of waiting for the daily s
     ![](img/Lab04/img25.png)
 
     > **Note:** The first backup is a full backup, so the **Transfer data to vault** subtask can take an hour or more. You do not need to wait for it. As soon as **Take Snapshot** shows **Completed**, a recovery point is available and you can continue with Task 5.
-
----
 
 ## Task 5: Restore the VM disks from a recovery point
 
@@ -207,8 +197,6 @@ In this task, you restore the VM's disks from the recovery point you just create
 
     > **Note:** Restoring disks rather than a full VM keeps the original VM untouched and avoids extra compute cost. The restored disks can be attached to a new or existing VM when you need them.
 
----
-
 ## Task 6: Clean up the backup configuration
 
 A vault that still holds backup data cannot be deleted, and this blocks the clean-up of the resource group. Remove the backup data before you finish.
@@ -230,8 +218,6 @@ A vault that still holds backup data cannot be deleted, and this blocks the clea
     ![](img/Lab04/img36.png)
 
     > **Note:** Do not delete the SQL Server VM or the **tailspin-<inject key="DeploymentID" enableCopy="false"/>** resource group. They are cleaned up with the lab.
-
----
 
 ## 🧾 Summary
 
