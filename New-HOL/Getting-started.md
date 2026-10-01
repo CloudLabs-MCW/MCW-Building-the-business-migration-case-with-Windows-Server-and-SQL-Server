@@ -6,13 +6,13 @@
 
 Tailspin Toys is planning to migrate its on-premises Windows Server and SQL Server workloads to Azure. As part of this migration strategy, the organization needs to move its on-premises SQL Server database to Azure SQL Managed Instance, stand up a Windows Server virtual machine in Azure to host the migrated web application, and Azure Arc-enable an on-premises server that will remain on-premises so that it can be managed centrally alongside its Azure resources.
 
-As a Cloud Engineer at Tailspin Toys, you will migrate the on-premises **WideWorldImporters** SQL Server database to Azure SQL Managed Instance using Azure Database Migration Service (DMS), create a Windows Server 2025 Datacenter: Azure Edition virtual machine as the destination for the web application, and Azure Arc-enable an on-premises Windows Server virtual machine to bring it under unified Azure management.
+As a Cloud Engineer at Tailspin Toys, you will migrate the on-premises **WideWorldImporters** SQL Server database to Azure SQL Managed Instance using Azure Database Migration Service (DMS), create a Windows Server 2025 Datacenter: Azure Edition virtual machine as the destination for the web application, Azure Arc-enable an on-premises Windows Server virtual machine to bring it under unified Azure management, and protect the SQL Server virtual machine itself using Azure Backup.
 
 ## 📖 Overview
 
 Migrating existing workloads to the cloud requires careful planning, assessment, and the right set of tools. This lab walks through a realistic migration scenario in which an organization moves a production SQL Server database to a fully managed Azure SQL Managed Instance, provisions Azure infrastructure to host a migrated application, and extends Azure management to servers that will remain on-premises using Azure Arc.
 
-The lab begins by migrating the on-premises SQL Server database to Azure SQL Managed Instance using Azure Database Migration Service. It then moves on to provisioning a Windows Server 2025 Datacenter: Azure Edition virtual machine that will serve as the destination for the migrated web application. Finally, it demonstrates how to Azure Arc-enable an on-premises virtual machine so that it can be governed, monitored, and managed from within Azure alongside native Azure resources.
+The lab begins by migrating the on-premises SQL Server database to Azure SQL Managed Instance using Azure Database Migration Service. It then moves on to provisioning a Windows Server 2025 Datacenter: Azure Edition virtual machine that will serve as the destination for the migrated web application. Next, it demonstrates how to Azure Arc-enable an on-premises virtual machine so that it can be governed, monitored, and managed from within Azure alongside native Azure resources. Finally, it protects the SQL Server virtual machine itself with Azure Backup, so that the machine can be recovered if it is ever lost or damaged.
 
 ## 🎯 Objectives
 
@@ -24,7 +24,7 @@ By the end of this lab, you will be able to:
 
 - **Exercise 3 - Azure Arc-enable an on-premises VM:** Generate and run the Azure Arc onboarding script to connect an on-premises Windows Server virtual machine to Azure, enabling unified management through Azure Arc.
 
-- **Exercise 4 - Knowledge Check:** Assess your understanding of the migration strategy, migration process, database verification, networking and secure access, and Azure Arc concepts covered in the lab.
+- **Exercise 4 - Protect the SQL Server VM with Azure Backup:** Create a Recovery Services vault, define a backup policy, run an on-demand backup of the SQL Server virtual machine, and restore its disks from a recovery point.
 
 ## ⚙️ Prerequisites
 
@@ -36,7 +36,7 @@ Participants should have:
 
 ## 🏗️ Architecture
 
-This architecture represents a hybrid migration workflow. A simulated on-premises environment, consisting of a Hyper-V host virtual machine and a SQL Server virtual machine, runs the source WideWorldImporters database. The database is migrated to a pre-provisioned Azure SQL Managed Instance that resides in a delegated subnet within an Azure virtual network. A Windows Server 2025 Datacenter: Azure Edition virtual machine is provisioned within the same virtual network to host the migrated web application, with secure administrative access provided through Azure Bastion. A virtual machine running inside the Hyper-V host is Azure Arc-enabled so that it can be managed centrally from Azure without being migrated.
+This architecture represents a hybrid migration workflow. A simulated on-premises environment, consisting of a Hyper-V host virtual machine and a SQL Server virtual machine, runs the source WideWorldImporters database. The database is migrated to a pre-provisioned Azure SQL Managed Instance that resides in a delegated subnet within an Azure virtual network. A Windows Server 2025 Datacenter: Azure Edition virtual machine is provisioned within the same virtual network to host the migrated web application, with secure administrative access provided through Azure Bastion. A virtual machine running inside the Hyper-V host is Azure Arc-enabled so that it can be managed centrally from Azure without being migrated. The SQL Server virtual machine is additionally protected by an Azure Recovery Services vault, which stores its backups and provides a recovery point for restoring its disks.
 
 ## 🖼️ Architecture Diagram
 
@@ -59,6 +59,8 @@ This architecture represents a hybrid migration workflow. A simulated on-premise
 - **Azure Bastion:** Provides secure RDP connectivity to Azure virtual machines directly from the Azure portal, without exposing public RDP endpoints.
 
 - **Azure Arc:** Extends Azure management, governance, and monitoring to machines hosted outside of Azure through the Azure Connected Machine agent. Once connected, each machine is treated as a resource in Azure with its own Azure Resource ID.
+
+- **Azure Recovery Services vault:** Stores backups of the SQL Server virtual machine and provides the restore point used to recover its disks in Exercise 4.
 
 - **Azure Virtual Network:** Hosts the lab resources, including a dedicated delegated subnet for the Azure SQL Managed Instance and a management subnet for the virtual machines.
 
@@ -106,7 +108,7 @@ To adjust the zoom level for the environment page, click on the **A↕** icon lo
 
 Use the **slider (three vertical dots)** located between the Virtual Machine and the Lab Guide panes to adjust the display size, allowing you to customize the layout based on your preference.
 
-![](img/Gettingstarted/img4.png)   
+![](img/Gettingstarted/img4.png)
 
 ### Let's Get Started with the Azure Portal
 
@@ -149,7 +151,7 @@ This is your own resource group. Everything in it was deployed for you and belon
 
 | Resource | Type | Why it is in this lab |
 | --- | --- | --- |
-| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm** | Virtual machine | The simulated on-premises SQL Server. It holds the **WideWorldImporters** database that you back up and migrate in Exercise 1. This is also the virtual machine you are working on right now. |
+| **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm** | Virtual machine | The simulated on-premises SQL Server. It holds the **WideWorldImporters** database that you back up and migrate in Exercise 1, and it is also the virtual machine you protect with Azure Backup in Exercise 4. This is also the virtual machine you are working on right now. |
 | **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-vm** | Virtual machine | The simulated on-premises Hyper-V host. A nested virtual machine named **OnPremVM** runs inside it, and that nested machine is the server you Azure Arc-enable in Exercise 3. Nested virtualization lets the lab simulate a physical on-premises server without any hardware. |
 | **storage<inject key="DeploymentID" enableCopy="false"/>** | Storage account | Contains the **sql-backup** blob container. In Exercise 1 you upload the database backup here, because Azure Database Migration Service reads the source backup from blob storage rather than from the server. |
 | **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** | Azure Database Migration Service | The service that orchestrates the migration in Exercise 1. It reads the backup from blob storage and restores it into the Managed Instance. |
@@ -158,7 +160,7 @@ This is your own resource group. Everything in it was deployed for you and belon
 | **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-sql-pip**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-hyperv-pip** | Public IP address | Gives each virtual machine a public address and DNS name. These are listed on the **Environment** tab. |
 | **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm_disk1**<br>**tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-vm_OsDisk** | Managed disk | The operating system disk for each virtual machine. The Hyper-V host disk is larger because it stores the nested virtual machine's virtual hard disk as well as its own operating system. |
 
-> **Note:** You will also create one more virtual machine in this resource group during Exercise 2, named **tailspin-webapp-vm**. It does not exist yet.
+> **Note:** You will also create one more virtual machine in this resource group during Exercise 2, named **tailspin-webapp-vm**. It does not exist yet. In Exercise 4, you will also create a Recovery Services vault named **rsv-tailspin-<inject key="DeploymentID" enableCopy="false"/>** in this same resource group.
 
 ### Resource group 2: SQLMI-SHARED-RG-PROD
 
