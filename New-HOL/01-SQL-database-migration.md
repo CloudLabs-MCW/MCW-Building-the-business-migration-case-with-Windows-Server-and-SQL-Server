@@ -51,8 +51,6 @@ The Managed Instance used in this lab was created with the following configurati
 
 In this task, you create a full backup of the WideWorldImporters database using SQL Server Management Studio (SSMS).
 
-> **Note:** The lab virtual machine you are already working on is **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**, the simulated on-premises SQL Server that holds the source database. You do not need to connect to any other machine for this task.
-
 1. On the lab virtual machine, click on the **Windows Start** button, type **SQL Server Management Studio (1)**, and then select **Microsoft SQL Server Management Studio 22 (2)** from the search results.
 
    > **Note:** SQL Server Management Studio 22 can take up to a minute to open the first time you launch it.
@@ -184,12 +182,17 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
    ![](img/Lab01/img28.png)
 
-1. Sign in with your lab credentials:
+1. On the **Sign in** tab, enter the following **Email/Username (1)**, and then click on **Next (2)**.
 
-   - **Username:** <inject key="AzureAdUserEmail"></inject>
-   - **Temporary Access Pass:** <inject key="AzureAdUserPassword"></inject>
+   - **Email/Username:** <inject key="AzureAdUserEmail"></inject>
 
    ![](img/Lab01/img29.png)
+
+1. Enter the following **Temporary password (1)**, and then click on **Sign in (2)**.
+
+   - **Temp Access Pass:** <inject key="AzureAdUserPassword"></inject>
+
+   ![](img/Gettingstarted/img7.png)
 
 1. On the **Stay signed in to all your apps** prompt, select **No, this app only**.
 
@@ -247,7 +250,7 @@ In this task, you assign the **Storage Blob Data Reader** role on the storage ac
 
    ![](img/Lab01/img58.png)
 
-1. On the **Members** tab, ensure that **User, group, or service principal (1)** is selected for **Assign access to**, and then click on **+ Select members (2)**. On the **Select members** pane, enter **odl_user_<inject key="DeploymentID" enableCopy="false"/> (3)** in the search box, select your user account **ODL_User <inject key="DeploymentID" enableCopy="false"/> (4)** from the results, click on the **Select (5)** button, and then click on the **Review + assign (6)** button.
+1. On the **Members** tab, ensure that **User, group, or service principal** is selected for **Assign access to**, and then click on **+ Select members (1)**. On the **Select members** pane, enter **odl_user_<inject key="DeploymentID" enableCopy="false"/> (2)** in the search box, select your user account **ODL_User <inject key="DeploymentID" enableCopy="false"/> (3)** from the results, click on the **Select (4)** button, and then click on the **Review + assign (5)** button.
 
    ![](img/Lab01/img59.png)
 
@@ -284,7 +287,27 @@ You have now granted both your lab user account and the SQL Managed Instance rea
 
 In this task, you use Azure Database Migration Service to restore the backup into the Managed Instance and complete the migration.
 
-1. In the Azure portal, open your Azure Database Migration resource and then select the **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** migration service.
+1. Before you begin, verify whether the SQL Managed Instance is running or stopped.
+
+    > **Note:** The Managed Instance must be running before you start the migration. Azure Database Migration Service cannot restore the backup while the instance is stopped.
+
+1. In the Azure portal **Search** bar, type **SQL managed instances (1)**, and then select it **(2)**.
+
+   ![](img/Lab01/img53.png)
+
+1. Select **SQL managed instances (1)** from the left pane, and then select **sqlmi-hol (2)**.
+
+   ![](img/Lab01/img54.png)
+
+1. Verify the status of the Managed Instance. If it is stopped, select the **Start** button.
+
+   ![](img/Lab01/SQLMI.png)
+
+1. Then in the Azure portal search for **Azure Database Migration Service (1)** and Select **Azure Database Migration Service Resources (2)**
+
+   ![](img/Lab01/imgadms.png)
+
+1. On the **Azure Database Migration Service** page please select the **dataMigration-<inject key="DeploymentID" enableCopy="false"/>** migration service.
 
    ![](img/Lab01/azdms.png)
 
