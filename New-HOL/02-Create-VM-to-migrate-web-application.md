@@ -26,10 +26,10 @@ In this exercise, you will complete the following tasks:
 
 In this task, you provision the virtual machine that will host the migrated web application.
 
-1. Sign in to the **Azure portal** at `https://portal.azure.com` using your lab credentials:
+1. Sign in to the **Azure portal** at `https://portal.azure.com` using your lab credentials if prompts:
 
    - **Username:** <inject key="AzureAdUserEmail"></inject>
-   - **Password:** <inject key="AzureAdUserPassword"></inject>
+   - **Temp Access Pass:** <inject key="AzureAdUserPassword"></inject>
 
 1. On the Azure portal home page, select **Create a resource**.
 
