@@ -40,7 +40,7 @@ This architecture represents a hybrid migration workflow. A simulated on-premise
 
 ## 🖼️ Architecture Diagram
 
-![](img/Gettingstarted/arcimg.png)
+![](img/Gettingstarted/lab-architecture-diagram.png)
 
 ## 🔍 Explanation of Components
 
