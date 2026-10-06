@@ -1,4 +1,4 @@
-# Exercise 2: Create VM to migrate web application
+# Exercise 2: Create a Virtual Machine to Host the Web Application
 
 ### Estimated Duration: 90 Minutes
 

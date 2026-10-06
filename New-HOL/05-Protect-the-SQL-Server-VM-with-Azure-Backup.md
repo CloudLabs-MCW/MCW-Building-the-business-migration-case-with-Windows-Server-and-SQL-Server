@@ -217,10 +217,19 @@ A vault that still holds backup data cannot be deleted, and this blocks the clea
 
     ![](img/Lab04/img36.png)
 
-    > **Note:** Do not delete the SQL Server VM or the **tailspin-<inject key="DeploymentID" enableCopy="false"/>** resource group. They are cleaned up with the lab.
-
 ## 🧾 Summary
 
-In this exercise, you protected the SQL Server VM with Azure Backup, ran an on-demand backup, and restored its disks. The key takeaway is that a backup is only proven when you have restored from it.
+In this exercise, you have accomplished the following:
 
-### You have successfully completed this lab.
+* Registered the Recovery Services resource provider in the subscription
+* Created a Recovery Services vault and set its storage replication type to locally-redundant
+* Created a daily backup policy with instant restore and 7-day retention, and enabled backup on the SQL Server VM
+* Ran an on-demand backup and monitored the backup job
+* Restored the VM disks from a recovery point without affecting the original VM
+* Cleaned up the backup configuration so the resource group can be removed at the end of the lab
+
+## ✅ Conclusion
+
+In this lab, you explored how to plan and carry out a hybrid migration with Windows Server and SQL Server on Azure. You migrated the WideWorldImporters database to Azure SQL Managed Instance using Azure Database Migration Service, and learned why the online method was used. You created a Windows Server 2025 Datacenter: Azure Edition virtual machine for the web application, accessed it securely through Azure Bastion, and confirmed its private connection to the migrated database. You connected an on-premises server to Azure using Azure Arc, so it can be managed alongside your Azure resources. Finally, you protected the SQL Server virtual machine with Azure Backup and proved the backup works by restoring from it. Through these exercises, you gained practical skills in database migration, secure connectivity, hybrid management, and backup and recovery.
+
+### 🎉 Congratulations! You have successfully completed the Hands-on lab.

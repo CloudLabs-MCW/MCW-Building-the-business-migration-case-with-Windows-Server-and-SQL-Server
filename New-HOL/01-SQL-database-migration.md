@@ -1,4 +1,4 @@
-# Exercise 1: SQL database migration
+# Exercise 1: Migrate the SQL Database to Azure SQL Managed Instance
 
 ### Estimated Duration: 180 Minutes
 
@@ -9,8 +9,6 @@ Tailspin Toys needs to migrate its on-premises SQL Server database to Azure SQL 
 ## 📋 Overview
 
 In this exercise, you migrate a database from a simulated on-premises SQL Server to a fully managed Azure SQL Managed Instance. You will first review how the target Managed Instance is created, then back up the source database and place that backup in Azure Blob Storage, and finally use Azure Database Migration Service to restore the backup into the Managed Instance and complete the migration.
-
-> **Note:** Older versions of this lab used the **Data Migration Assistant (DMA)** and the **Azure SQL Migration extension for Azure Data Studio**. Both tools were retired by Microsoft on **February 28, 2026**. This exercise uses **Azure Database Migration Service (DMS)** directly from the Azure portal, which is the current supported path. The migration result is identical: the WideWorldImporters database ends up running on Azure SQL Managed Instance.
 
 ## 🎯 Objectives
 
