@@ -1,4 +1,4 @@
-# Exercise 3: Azure Arc-enable on-premises VM
+# Exercise 3: Connect the On-Premises VM to Azure Arc
 
 ### Estimated Duration: 90 Minutes
 

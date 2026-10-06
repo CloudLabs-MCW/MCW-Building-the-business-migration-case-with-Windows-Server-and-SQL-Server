@@ -18,11 +18,11 @@ The lab begins by migrating the on-premises SQL Server database to Azure SQL Man
 
 By the end of this lab, you will be able to:
 
-- **Exercise 1 - SQL database migration:** Back up the on-premises WideWorldImporters database and migrate it to a pre-provisioned Azure SQL Managed Instance using Azure Database Migration Service (DMS) from the Azure portal.
+- **Exercise 1 - Migrate the SQL Database to Azure SQL Managed Instance:** Back up the on-premises WideWorldImporters database and migrate it to a pre-provisioned Azure SQL Managed Instance using Azure Database Migration Service (DMS) from the Azure portal.
 
-- **Exercise 2 - Create a VM to migrate the web application:** Create a Windows Server 2025 Datacenter: Azure Edition virtual machine to serve as the destination host for the migrated web application, and validate secure remote access using Azure Bastion.
+- **Exercise 2 - Create a Virtual Machine to Host the Web Application:** Create a Windows Server 2025 Datacenter: Azure Edition virtual machine to serve as the destination host for the migrated web application, and validate secure remote access using Azure Bastion.
 
-- **Exercise 3 - Azure Arc-enable an on-premises VM:** Generate and run the Azure Arc onboarding script to connect an on-premises Windows Server virtual machine to Azure, enabling unified management through Azure Arc.
+- **Exercise 3 - Connect the On-Premises VM to Azure Arc:** Generate and run the Azure Arc onboarding script to connect an on-premises Windows Server virtual machine to Azure, enabling unified management through Azure Arc.
 
 - **Exercise 4 - Protect the SQL Server VM with Azure Backup:** Create a Recovery Services vault, define a backup policy, run an on-demand backup of the SQL Server virtual machine, and restore its disks from a recovery point.
 
@@ -40,7 +40,7 @@ This architecture represents a hybrid migration workflow. A simulated on-premise
 
 ## 🖼️ Architecture Diagram
 
-![](img/Gettingstarted/architecture.png)
+![](img/Gettingstarted/arcimg.png)
 
 ## 🔍 Explanation of Components
 
