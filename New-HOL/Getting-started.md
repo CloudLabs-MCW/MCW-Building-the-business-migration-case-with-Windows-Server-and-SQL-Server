@@ -1,6 +1,6 @@
 # Building the Business Migration Case with Windows Server and SQL Server
 
-### Estimated Duration: 8 Hours
+### Overall Estimated Duration: 8 Hours
 
 ## 📘 Lab Scenario
 
@@ -30,9 +30,12 @@ By the end of this lab, you will be able to:
 
 Participants should have:
 
-- Basic understanding of Azure services such as Azure SQL Managed Instance and Azure Virtual Machines.
-- Basic familiarity with SQL Server database concepts and migration.
+- A Microsoft Entra ID user account.
+- An active Azure subscription with permissions to create and manage Azure resources.
+- Basic understanding of Azure services such as Azure SQL Managed Instance, Azure Database Migration Service, Azure Virtual Machines, and Azure Virtual Network.
+- Basic familiarity with SQL Server database concepts, backup and restore, and database migration.
 - Basic familiarity with the Azure portal.
+- Basic awareness of Azure Arc and Azure Backup is helpful.
 
 ## 🏗️ Architecture
 
@@ -40,7 +43,7 @@ This architecture represents a hybrid migration workflow. A simulated on-premise
 
 ## 🖼️ Architecture Diagram
 
-![](img/Gettingstarted/lab-architecture-diagram.png)
+![](img/Gettingstarted/image.png)
 
 ## 🔍 Explanation of Components
 
@@ -112,7 +115,7 @@ Use the **slider (three vertical dots)** located between the Virtual Machine and
 
 ### Let's Get Started with the Azure Portal
 
-1. On your virtual machine, click on the Azure portal icon.
+1. On your virtual machine, click on the **Azure Portal** icon.
 
    ![](img/Gettingstarted/img5.png)
 

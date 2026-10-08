@@ -51,7 +51,7 @@ The Managed Instance used in this lab was created with the following configurati
 
 In this task, you create a full backup of the WideWorldImporters database using SQL Server Management Studio (SSMS).
 
-1. On the lab virtual machine, click on the **Windows Start** button, type **SQL Server Management Studio (1)**, and then select **Microsoft SQL Server Management Studio 22 (2)** from the search results.
+1. On the lab virtual machine, click on the **Windows Start** button, type **SQL Server Management Studio 22 (1)**, and then select **SQL Server Management Studio 22 (2)** from the search results.
 
    > **Note:** SQL Server Management Studio 22 can take up to a minute to open the first time you launch it.
 
@@ -287,23 +287,7 @@ You have now granted both your lab user account and the SQL Managed Instance rea
 
 In this task, you use Azure Database Migration Service to restore the backup into the Managed Instance and complete the migration.
 
-1. Before you begin, verify whether the SQL Managed Instance is running or stopped.
-
-    > **Note:** The Managed Instance must be running before you start the migration. Azure Database Migration Service cannot restore the backup while the instance is stopped.
-
-1. In the Azure portal **Search** bar, type **SQL managed instances (1)**, and then select it **(2)**.
-
-   ![](img/Lab01/img53.png)
-
-1. Select **SQL managed instances (1)** from the left pane, and then select **sqlmi-hol (2)**.
-
-   ![](img/Lab01/img54.png)
-
-1. Verify the status of the Managed Instance. If it is stopped, select the **Start** button.
-
-   ![](img/Lab01/SQLMI.png)
-
-1. Then in the Azure portal search for **Azure Database Migration Service (1)** and Select **Azure Database Migration Service Resources (2)**
+1. in the Azure portal search for **Azure Database Migration Service (1)** and Select **Azure Database Migration Service Resources (2)**
 
    ![](img/Lab01/imgadms.png)
 
@@ -354,6 +338,7 @@ In this task, you use Azure Database Migration Service to restore the backup int
    - Blob container: **sql-backup**
    - Folder: **Backup**
    - Target database: **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>**
+   - Select the checkbox **I confirm the Managed Identity has read access to the above blob container(s)**.
 
    > **Note:** Make sure you enter the target database name with your deployment ID, exactly as shown above. You can copy the exact value from **Your Target Database Name** on the **Environment** tab.
 
@@ -375,7 +360,7 @@ In this task, you use Azure Database Migration Service to restore the backup int
 
    ![](img/Lab01/img49.png)
 
-1. On the **Complete cutover** confirmation page, click on **Complete cutover**.
+1. On the **Complete cutover** pane, select the checkbox **I confirm there are no additional log backups to provide and want to complete cutover (1)**, and then click on **Complete cutover (2)**.
 
    ![](img/Lab01/img51.png)
 
@@ -395,9 +380,9 @@ In this task, you confirm that the migrated database is online on the Managed In
 
    ![](img/Lab01/img54.png)
 
-1. On the left menu, under **Settings**, select **SQL databases**. Confirm that the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** database is listed with a status of **Online**.
+1. On the **Overview** page of **sqlmi-hol**, scroll down to the **Managed Instance databases** list. In the filter box **(1)**, enter **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>**. Confirm that the **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>** database is listed with a status of **Online (2)**.
 
-   ![](img/Lab01/img55.png)
+   ![](img/Lab01/SQLMIdb.png)
 
    > **Note:** As `sqlmi-hol` is a shared resource, you may see other databases listed here. Please verify that you are working with the database associated with your deployment ID. For this lab, your target database will be **WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/>**
 
