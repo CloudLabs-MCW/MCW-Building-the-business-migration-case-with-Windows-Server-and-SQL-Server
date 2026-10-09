@@ -27,7 +27,7 @@ In this exercise, you will complete the following tasks:
 
 In this task, you confirm that the subscription have create Recovery Services vaults, which is a one-time requirement before Azure Backup can be used.
 
-1. In the Azure portal, search for **Subscriptions** and select the subscription.
+1. In the Azure portal, search for **Subscriptions (1)** and select the **Subscriptions (2)**.
 
     ![](img/Lab04/img1.png)
 
@@ -103,7 +103,7 @@ In this task, you define how often backups run and how long they are kept, and t
 
     ![](img/Lab04/img15.png)
 
-1. Under **Policy sub type**, select **Standard**, and then choose **policy-tailspin-daily**.
+1. Under **Policy sub type**, select **Standard (1)**, and then choose **policy-tailspin-daily (2)**.
 
     ![](img/Lab04/img13.png)
 
@@ -201,7 +201,7 @@ In this task, you restore the VM's disks from the recovery point you just create
 
 A vault that still holds backup data cannot be deleted, and this blocks the clean-up of the resource group. Remove the backup data before you finish.
 
-1. Go to **Backup items**, then **Azure Virtual Machine**, and select the SQL Server VM.
+1. Go to **Recovery service vault (1)** select **Backup items (2)**, then **Azure Virtual Machine (3)**, and select the SQL Server VM.
 
     ![](img/Lab04/img33.png)
 
@@ -209,7 +209,11 @@ A vault that still holds backup data cannot be deleted, and this blocks the clea
 
     ![](img/Lab04/img34.png)
 
-1. Choose **Delete Backup Data**, enter the VM name to confirm, select a reason, and then select **Stop backup**.
+1. On the **Stop Backup** page, set the following values, and then select **Stop backup (4)**:
+
+   - **Stop backup level (1):** **Delete backup data**
+   - **Type the name of backup item (2):** **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**
+   - **Reason (3):** **Others**
 
     ![](img/Lab04/img35.png)
 

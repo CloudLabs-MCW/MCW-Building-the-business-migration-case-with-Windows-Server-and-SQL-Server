@@ -122,7 +122,7 @@ In this task, you create a full backup of the WideWorldImporters database using 
 
    ![](img/Lab01/img16.png)
 
-1. In the **Back Up Database** window, select the existing path under **Destination**, and then click on **Remove**. You will add a new path for the backup.
+1. In the **Back Up Database** window, select the existing path under **Destination (1)**, and then click on **Remove (2)**. You will add a new path for the backup.
 
    > **Note:** You must remove the default destination and specify a new file. Backing up to a file that already contains a backup from a different SQL Server version fails with the error *"The Backup cannot be performed because the existing media set is formatted with an incompatible version."*
 
@@ -372,7 +372,7 @@ In this task, you use Azure Database Migration Service to restore the backup int
 
 In this task, you confirm that the migrated database is online on the Managed Instance.
 
-1. In the Azure portal **Search** bar, type **SQL managed instances (1)**, and then select it **(2)**.
+1. In the Azure portal **Search** bar, type **SQL managed instances (1)**, and then select **Azure SQL managed instances (2)**.
 
    ![](img/Lab01/img53.png)
 
@@ -464,4 +464,4 @@ In this exercise, you accomplished the following:
 
 ### You have successfully completed this exercise. Click on **Next >>** to proceed with the next exercise.
 
-![](Images/2nct.png)
+![](img/2nct.png)
