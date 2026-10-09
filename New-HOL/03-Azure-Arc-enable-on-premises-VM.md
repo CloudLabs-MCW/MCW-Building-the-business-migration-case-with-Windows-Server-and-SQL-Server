@@ -57,7 +57,7 @@ In this task, you use the Azure portal to generate the onboarding script that in
 
    ![](img/Lab03/img5.png)
 
-1. On the **Download and run script** tab, select **Download** to save the **OnboardingScript.ps1** file.
+1. On the **Download and run script** tab, select **Download** to save the **OnboardingScript.ps1** file or copy the script.
 
    > **Note:** Keep this browser tab open. You will copy the script contents into the on-premises virtual machine in the next task.
 
@@ -252,7 +252,6 @@ In this exercise, you accomplished the following:
 
 You have now completed the full migration story for Tailspin Toys. The database tier runs on Azure SQL Managed Instance, the application tier runs on a Windows Server virtual machine in Azure, and the server that stays on-premises is managed from Azure through Azure Arc.
 
-
-### You have successfully completed the lab!
+### You have successfully completed this exercise. Click on **Next >>** to proceed with the next exercise.
 
 ![](img/2nct.png)

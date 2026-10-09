@@ -96,14 +96,14 @@ In this task, you provision the virtual machine that will host the migrated web 
 
 Because the virtual machine has no public IP address, you cannot connect to it directly over the internet. In this task, you use Azure Bastion to open a secure RDP session from inside the Azure portal.
 
-1. On the **tailspin-webapp-vm** virtual machine page, select **Connect (1)** at the top, and then select **Connect via Bastion (2)**. Alternatively, select **Bastion** from the left menu under **Connect**.
+1. On the **tailspin-webapp-vm** virtual machine page, select **Bastion** from the left menu under **Connect**.
 
    ![](img/Lab02/img8.png)
 
-1. On the **Bastion** pane, enter the following credentials, and then select **Connect**:
+1. On the **Bastion** pane, enter the following credentials, and then select **Connect (3)**:
 
-   - **Username:** azureuser
-   - **Password:** azureuser!pass123
+   - **Username (1):** azureuser
+   - **Password (2):** azureuser!pass123
 
    > **Note:** The Azure Bastion host, named similar to **tailspin-hub-bastion**, was created as part of the lab environment, so you can connect without deploying anything extra.
 
