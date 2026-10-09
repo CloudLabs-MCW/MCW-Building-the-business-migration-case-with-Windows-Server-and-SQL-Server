@@ -2,13 +2,13 @@
 
 ### Estimated Duration: 90 Minutes
 
-## 📘 Lab Scenario
+## 📘 Scenario
 
 In this exercise, you Azure Arc-enable a Windows Server virtual machine that Tailspin Toys runs on-premises. There are no plans to migrate this server to Azure, but Tailspin Toys wants to manage all of its servers - both in Azure and on-premises - from a single place. **Azure Arc** makes this possible by projecting the on-premises server into Azure so that it can be governed and managed alongside native Azure resources.
 
 ## 📋 Overview
 
-This exercise extends Azure management to a server that stays on-premises. You generate an Azure Arc onboarding script from the Azure portal, run it on a simulated on-premises virtual machine that runs inside a Hyper-V host, and then verify that the machine appears in Azure as a **Connected** Azure Arc-enabled server.
+This exercise extends Azure management to a server that stays on-premises. You generate an Azure Arc onboarding script from the Azure portal, run it on a simulated on-premises virtual machine that runs inside a Hyper-V host, and then verify that the machine appears in Azure as a **Connected** Azure Arc-enabled server. Finally, you review what Azure now knows about the server and which management capabilities become available.
 
 > **Note:** Not every server can or should be migrated. Some workloads are tied to specific hardware, and others cannot move because of latency, compliance, or licensing constraints. Azure Arc addresses this by bringing Azure management to those servers rather than moving the servers to Azure. Once a machine is Arc-enabled, it receives its own Azure Resource ID and appears in the portal, in Azure Policy, and in Azure Monitor next to your native Azure resources.
 
@@ -19,12 +19,13 @@ In this exercise, you will complete the following tasks:
 - **Task 1:** Generate the Azure Arc onboarding script
 - **Task 2:** Run the script on the on-premises virtual machine
 - **Task 3:** Verify the Azure Arc-enabled server
+- **Task 4:** Review the Azure Arc-enabled server **(Read-Only)**
 
 ## Task 1: Generate the Azure Arc onboarding script
 
 In this task, you use the Azure portal to generate the onboarding script that installs and configures the Azure Connected Machine agent.
 
-1. Sign in to the **Azure portal** at `https://portal.azure.com`.
+1. On the lab VM, open Microsoft Edge and sign in to the **Azure portal** at https://portal.azure.com.
 
 1. In the top **Search** bar, type **Azure Arc (1)**, and then select **Azure Arc (2)**.
 
@@ -51,13 +52,13 @@ In this task, you use the Azure portal to generate the onboarding script that in
 
    ![](img/Lab03/img4.png)
 
-1. Under **Connectivity method**, select **Public endpoint (1)**. Under **Authentication**, select **Authenticate machine manually (2)**, and then click on **Download and run script (3)**.
+1. Scroll down to **Connectivity method**, select **Public endpoint (1)**. Under **Authentication**, select **Authenticate machine manually (2)**, and then click on **Download and run script (3)**.
 
-   > **Note:** **Public endpoint** means the server connects to Azure over the internet on port 443 outbound. Production environments often use a private endpoint or an Azure Arc gateway instead, so that traffic never leaves the private network. **Authenticate machine manually** prompts for an interactive sign-in, which suits a single server; onboarding many servers at once uses a service principal instead.
+   > **Note:** **Public endpoint** means the server connects to Azure over the internet on port 443 outbound. Production environments often route this traffic through a proxy or an **Azure Arc gateway**, which reduces the number of endpoints to allow through the firewall, or use **Private Link** so that traffic stays on the private network. **Authenticate machine manually** prompts for an interactive sign-in, which suits a single server; onboarding many servers at once uses a service principal instead.
 
    ![](img/Lab03/img5.png)
 
-1. On the **Download and run script** tab, select **Download** to save the **OnboardingScript.ps1** file or copy the script.
+1. On the **Download and run script** tab, copy the script and paste it into Notepad.
 
    > **Note:** Keep this browser tab open. You will copy the script contents into the on-premises virtual machine in the next task.
 
@@ -67,7 +68,7 @@ In this task, you use the Azure portal to generate the onboarding script that in
 
 In this task, you connect to the simulated on-premises server and run the onboarding script on it. The script installs the Azure Connected Machine agent and registers the server with Azure.
 
-1. In the Azure portal, search for **Virtual machines**, or select it from **Azure Services**.
+1. Open a new browser tab with the Azure portal. Search for **Virtual machines**, or select it from **Azure Services**.
 
    ![](img/Lab03/img7.png)
 
@@ -94,13 +95,13 @@ In this task, you connect to the simulated on-premises server and run the onboar
 
    ![](img/Lab03/img11.png)
 
-1. In **Hyper-V Manager**, select **OnPremVM (1)**, and then click on **Start (2)**. The virtual machine is in the **Off** state when you first connect.
+1. In **Hyper-V Manager**, select **OnPremVM (1)**. If the virtual machine is in the **Off** or **Stopped** state, click **Start (2)** and wait until the VM status changes to **Running**.
 
    ![](img/Lab03/img12.png)
 
-1. Wait until the state changes to **Running**, and then double-click on the **OnPremVM** virtual machine to open a connection to it.
-
    > **Note:** The virtual machine takes one to two minutes to boot. If the connection window is black, wait a few seconds and then click inside it.
+
+1. Double-click on the **OnPremVM** virtual machine to open a connection to it.
 
    ![](img/Lab03/img13.png)
 
@@ -123,13 +124,13 @@ In this task, you connect to the simulated on-premises server and run the onboar
 
    ![](img/Lab03/img15.png)
 
-1. Switch to the Azure portal browser tab from Task 1 and copy the full contents of the generated **OnboardingScript.ps1** file. Paste the contents into the PowerShell ISE script window on **OnPremVM**.
+1. Switch to the Azure portal browser tab from Task 1 and copy the full contents. Paste the contents into the PowerShell ISE script window on **OnPremVM**.
 
    > **Note:** If a normal paste does not work, use the **Clipboard > Type clipboard text** menu in the Hyper-V connection window. Clipboard sharing is unavailable in a basic Hyper-V session.
 
    ![](img/Lab03/img16.png)
 
-1. Run the script by pressing the **F5** key or by selecting the green **Run (1)** button. The script downloads and installs the Azure Connected Machine agent, and then opens a browser window for authentication.
+1. Run the script by pressing **F5** or clicking the green **Run (1)** button. The script downloads and installs the Azure Connected Machine agent and opens a browser window for authentication. After the script completes successfully, verify that it displays the **Connected machine to Azure (2)** message along with the Azure resource URL for the newly Arc-enabled server.
 
    > **Note:** The script opens a browser window and asks you to sign in to Azure. Enter the following credentials when prompted:
    - **Username:** <inject key="AzureAdUserEmail"></inject>
@@ -139,15 +140,11 @@ In this task, you connect to the simulated on-premises server and run the onboar
 
    ![](img/Lab03/img17.png)
 
-1. When the script finishes successfully, it displays a **Connected machine to Azure (2)** message along with the Azure resource URL for the newly Arc-enabled server.
-
-   ![](img/Lab03/img17.png)
-
 ## Task 3: Verify the Azure Arc-enabled server
 
 In this task, you confirm that the on-premises server now appears in Azure and can be managed from the portal.
 
-1. In the Azure portal, open the resource group **tailspin-<inject key="DeploymentID" enableCopy="false"/>**, locate the resource of type **Machine - Azure Arc**, and then select it.
+1. Go to Azure portal, open the resource group **tailspin-<inject key="DeploymentID" enableCopy="false"/>**, locate the resource of type **Machine - Azure Arc**, and then select it.
 
    > **Note:** The resource takes up to five minutes to appear. If you do not see it, select **Refresh** on the resource group page.
 
@@ -155,13 +152,13 @@ In this task, you confirm that the on-premises server now appears in Azure and c
 
 1. On the **Machine - Azure Arc** overview page, confirm that the **Status** shows **Connected**. The **Computer name** and **Operating system** are also displayed, confirming that Azure can now see details about the on-premises server.
 
-   > **Note:** The status is based on a heartbeat that the agent sends to Azure every five minutes. A machine that has not sent a heartbeat for longer than that shows as **Disconnected**, which is how you would spot an offline server in a real environment.
+   > **Note:** The status is based on a heartbeat that the agent sends to Azure every five minutes. A machine that has not sent a heartbeat for 15 minutes shows as **Disconnected**, and after 45 days without one it shows as **Expired**. This is how you would spot an offline server in a real environment.
 
    ![](img/Lab03/img19.png)
 
-1. Explore the left menu. Options such as **Extensions**, **Policies**, and **Inventory** show that the on-premises server can now be managed in the same way as a native Azure virtual machine.
+1. Scroll down on the **Overview** page to see capabilities such as **Insights**, **Policies**, and **Security**. They show that the on-premises server can now be managed in the same way as a native Azure virtual machine.
 
-   > **Note:** These options are what make Arc valuable in practice. **Extensions** installs agents such as Azure Monitor or Microsoft Defender for Cloud. **Policies** applies the same Azure Policy definitions you use for Azure virtual machines. **Azure Update Manager** patches the server on the same schedule as the rest of the estate. None of this requires the server to move to Azure.
+   > **Note:** These capabilities are what make Arc valuable in practice. **Insights** uses Azure Monitor to collect performance data and show which processes and connections are running on the server. **Policies** applies the same Azure Policy definitions you use for Azure virtual machines and reports whether the server is compliant. **Security** brings the server under Microsoft Defender for Cloud, so it receives the same security recommendations and threat protection as your Azure resources. None of this requires the server to move to Azure.
 
    ![](img/Lab03/img20.png)
 
@@ -186,7 +183,7 @@ The **Overview** page of the Arc machine shows the details that the Azure Connec
 | **Resource group** | The resource group you selected in Task 1. The Arc machine lives there like any other Azure resource. |
 | **Last status change** | When the status last changed, which is how you would spot a server that has gone offline. |
 
-The status is based on a heartbeat that the agent sends to Azure. If the server is shut down or loses internet access, the status changes to **Disconnected**. This is how an administrator would notice an unreachable server without logging on to it.
+The status is based on a heartbeat that the agent sends to Azure every five minutes. If the server is shut down or loses internet access for 15 minutes, the status changes to **Disconnected**, and after 45 days without a heartbeat it changes to **Expired**. This is how an administrator would notice an unreachable server without logging on to it.
 
 ### The resource ID
 
@@ -220,8 +217,6 @@ The left menu of the Arc machine lists what you can now do with this server from
 
 - **Tags** - the same tagging that Tailspin Toys applies to their Azure resources for cost tracking and ownership.
 
-None of these required the server to move to Azure. They became available the moment the agent connected.
-
 ### Why this matters for Tailspin Toys
 
 None of the capabilities above required the server to move to Azure. That is the
@@ -249,6 +244,7 @@ In this exercise, you accomplished the following:
 - Generated an Azure Arc onboarding script from the Azure portal.
 - Prepared the simulated on-premises virtual machine and ran the onboarding script to install the Azure Connected Machine agent.
 - Verified that the Azure Arc-enabled server shows a **Connected** status in the Azure portal.
+- Reviewed the Arc-enabled server's overview, resource ID, and the management capabilities it now exposes.
 
 You have now completed the full migration story for Tailspin Toys. The database tier runs on Azure SQL Managed Instance, the application tier runs on a Windows Server virtual machine in Azure, and the server that stays on-premises is managed from Azure through Azure Arc.
 

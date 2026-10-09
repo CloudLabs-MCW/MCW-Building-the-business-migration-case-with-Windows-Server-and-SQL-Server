@@ -2,7 +2,7 @@
 
 ### Estimated Duration: 90 Minutes
 
-## 📘 Lab Scenario
+## 📘 Scenario
 
 In this exercise, you create a new **Windows Server 2025 Datacenter: Azure Edition** virtual machine that will be the destination for migrating Tailspin Toys' web application to Azure. You then connect to it securely using **Azure Bastion**, and confirm that it can reach the database you migrated in Exercise 1. Windows Server Datacenter: Azure Edition is a virtual-only edition that runs as an Azure virtual machine and includes capabilities such as Hotpatching, which installs security updates without requiring a restart.
 
@@ -26,7 +26,11 @@ In this exercise, you will complete the following tasks:
 
 In this task, you provision the virtual machine that will host the migrated web application.
 
-1. Sign in to the **Azure portal** at `https://portal.azure.com` using your lab credentials if prompts:
+1. Go to the **Azure portal** using the link below and sign in with your lab credentials if prompted:
+
+   ```
+   https://portal.azure.com
+   ```
 
    - **Username:** <inject key="AzureAdUserEmail"></inject>
    - **Temp Access Pass:** <inject key="AzureAdUserPassword"></inject>
@@ -42,11 +46,11 @@ In this task, you provision the virtual machine that will host the migrated web 
 1. On the **Create a virtual machine** > **Basics** tab, enter the following values under **Project details** and **Instance details**:
 
    - **Subscription:** The lab subscription
-   - **Resource group:** **tailspin-<inject key="DeploymentID" enableCopy="false"/>**
-   - **Virtual machine name (1)**: **tailspin-webapp-vm**
-   - **Region (2)**: **Central US**
-   - **Image (3)**: **Windows Server 2025 Datacenter: Azure Edition - x64 Gen2**
-   - **Size (4)**: **Standard_D2s_v3**
+   - **Resource group:** **tailspin-<inject key="DeploymentID" enableCopy="false"/> (1)**
+   - **Virtual machine name (2)**: **tailspin-webapp-vm**
+   - **Region (3)**: **Central US**
+   - **Image (4)**: **Windows Server 2025 Datacenter: Azure Edition - x64 Gen2**
+   - **Size (5)**: **Standard_D2s_v5**
 
    > **Note:** If the size is not listed, select **See all sizes** and search for it.
 
@@ -54,9 +58,9 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    > **Note:** Select **Central US** so that the virtual machine lands in the same region as the lab virtual network and the shared SQL Managed Instance. A virtual machine cannot join a virtual network in a different region.
 
-   ![](img/Lab02/img3.png)
+   ![](img/Lab02/img3-1.png)
 
-1. Under **Administrator account**, enter the following values, and then select **Next (4)**:
+1. Scroll down to **Administrator account**, enter the following values, and then select **Next (4)**:
 
    - **Username (1)**: azureuser
    - **Password (2)**: azureuser!pass123
@@ -66,7 +70,7 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    ![](img/Lab02/img4.png)
 
-1. Select **Next: Disks >**, and then select **Next: Networking >** to reach the **Networking** tab. Enter the following values so that the virtual machine joins the lab virtual network with no public IP address, and then select **Review + create (4)**:
+1. Select **Next** to reach the **Networking** tab. Enter the following values so that the virtual machine joins the lab virtual network with no public IP address, and then select **Review + create (4)**:
 
    - **Virtual network (1)**: **vnet-sqlmi-hol**
    - **Subnet (2)**: **Managed**
@@ -74,7 +78,7 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    > **Note:** Setting the public IP address to **None** keeps the virtual machine off the public internet. You will connect to it securely using Azure Bastion in the next task.
 
-   > **Note:** Placing the virtual machine in **vnet-sqlmi-hol** puts it in the same virtual network as the SQL Managed Instance you migrated to in Exercise 1. The application can then reach the database over the private endpoint on port 1433, without that traffic ever leaving the Azure backbone.
+   > **Note:** Placing the virtual machine in **vnet-sqlmi-hol** connects it to the same virtual network as the SQL Managed Instance migrated in **Exercise 1**. This allows the application to communicate with the database through the private endpoint over port **1433**, keeping the traffic within the Azure backbone.
 
    > **Note:** Select the **Managed** subnet, not **ManagedInstance**. The **ManagedInstance** subnet is delegated to the SQL Managed Instance service and cannot host virtual machines.
 
@@ -105,7 +109,7 @@ Because the virtual machine has no public IP address, you cannot connect to it d
    - **Username (1):** azureuser
    - **Password (2):** azureuser!pass123
 
-   > **Note:** The Azure Bastion host, named similar to **tailspin-hub-bastion**, was created as part of the lab environment, so you can connect without deploying anything extra.
+   > **Note:** The Azure Bastion host, named similar to **vnet-sqlmi-hol-bastion**, was created as part of the lab environment, so you can connect without deploying anything extra.
 
    > **Note:** Azure Bastion delivers the RDP session to your browser over HTTPS on port 443. Port 3389 is never exposed to the internet, which removes one of the most commonly attacked entry points on a server.
 
@@ -127,7 +131,7 @@ Placing this virtual machine in **vnet-sqlmi-hol** is what allows the applicatio
 
 1. Return to the Azure Bastion session for **tailspin-webapp-vm**. If you closed it, reconnect using the steps in Task 2.
 
-1. Copy the following values from the **Environment** tab of your lab environment. You will need them in the steps that follow:
+1. Copy the following values from the **Environment** tab of your lab environment and paste them into Notepad. You will need them in the steps that follow:
 
    - **SQL MI Host (1)**
    - **SQL MI Admin Login (2)**
@@ -140,21 +144,21 @@ Placing this virtual machine in **vnet-sqlmi-hol** is what allows the applicatio
 
    ![](img/Lab03/img15.png)
 
-1. In the PowerShell ISE window, run the following command, replacing `<SQL MI Host>` with the value you copied in step 2:
+1. In the **PowerShell ISE** window, click the **New Script (1)** icon, paste the following command **(2)**, and replace `<SQL MI Host>` with the value you copied in **Step 2**. Then click **Run script (3)** to execute the command.
 
    ```powershell
    Test-NetConnection -ComputerName "<SQL MI Host>" -Port 1433
    ```
 
-   ![](img/Lab02/isesc.png)
+   ![](img/Lab02/isesc-1.png)
 
 1. Confirm that the output shows **TcpTestSucceeded : True**.
 
-   > **Note:** Port **1433** is the private endpoint of the Managed Instance. This test succeeds because the virtual machine you created in Task 1 sits in the **Managed** subnet of **vnet-sqlmi-hol**, the same virtual network as the Managed Instance. Had the virtual machine been created in a different virtual network, this test would fail and the application would have to reach the database over its public endpoint on port 3342 instead.
+   > **Note:** Port **1433** is used for private connectivity to the Managed Instance. This test succeeds because the virtual machine created in **Task 1** is connected to the **Managed** subnet of **vnet-sqlmi-hol**, which is the same virtual network as the Managed Instance. If the virtual machine were connected to a different virtual network, this test would fail, and the application would need to connect to the database through its public endpoint on port **3342**.
 
    ![](img/Lab02/isesc2.png)
 
-1. Now query the migrated database directly. In the same PowerShell ISE window, paste the following script, replacing the four placeholder values with the ones you copied in step 2, and then click on the green **Run Script** button or press the **F5** key:
+1. Now query the migrated database directly. In the same PowerShell ISE window, clear the script pane and paste the following script, replacing the four placeholder values with the ones you copied in step 2, and then click on the green **Run Script** button or press the **F5** key:
 
    ```powershell
    $server   = "<SQL MI Host>"
@@ -189,7 +193,7 @@ Placing this virtual machine in **vnet-sqlmi-hol** is what allows the applicatio
 
    ![](img/Lab02/isesc11.png)
 
-1. Next, check how the migrated database is configured. In the **Windows PowerShell ISE** script pane **(1)**, paste the following script, and then click on the green **Run Script (3)** button or press the **F5** key:
+1. Next, check how the migrated database is configured. In the **Windows PowerShell ISE** script pane **(1)**, paste the following script, and then click the green **Run Script (2)** button or press **F5** to view the results **(3)**.:
 
    ```powershell
    $connection = New-Object System.Data.SqlClient.SqlConnection($connectionString)
@@ -214,23 +218,23 @@ Placing this virtual machine in **vnet-sqlmi-hol** is what allows the applicatio
 
    ![](img/Lab02/isesc4.png)
 
-1. Review the five values returned in the console pane **(2)**:
+1. Review the five values returned in the console pane **(3)**:
 
    | Property | Value you should see | What it tells you |
    | --- | --- | --- |
    | **Database** | WideWorldImporters-<inject key="DeploymentID" enableCopy="false"/> | The database you migrated in Exercise 1. |
    | **State** | ONLINE | The database is available for the application to use. |
-   | **Recovery model** | FULL | Required for the online migration you ran. Transaction log backups can only be taken from a database in FULL recovery, and those log backups are what kept the target in sync until you completed the cutover. |
+   | **Recovery model** | FULL | Azure SQL Managed Instance always uses the FULL recovery model. The source also had to be in FULL recovery (set in Exercise 1) so that log backups could keep the target in sync during the online migration. |
    | **Compatibility level** | 100 | Carried across from the source database unchanged. Level 100 corresponds to SQL Server 2008. |
    | **Encryption** | Not encrypted | The source database was not encrypted, and the migration preserved that setting. |
 
-   > **Note:** The compatibility level is the clearest evidence of why Azure SQL Managed Instance was chosen for this migration. The database still runs at the SQL Server 2008 compatibility level on a platform service released more than a decade later, so queries written against the original database behave exactly as they did before and the application needs no code changes.
+   > **Note:** The database still runs at the SQL Server 2008 compatibility level on a modern platform service, so existing queries behave as they did before. Managed Instance was chosen over Azure SQL Database because it also keeps instance-level features such as SQL Server Agent and cross-database queries, so the application needs no code changes.
 
    > **Note:** Transparent Data Encryption is enabled by default on **new** databases created on a Managed Instance, but a database restored from an unencrypted backup keeps the source setting. Enabling it is a post-migration step rather than something the migration does for you.
 
    ![](img/Lab02/isesc4.1.png)
 
-1. Finally, look at what is actually inside the migrated database. In the **Windows PowerShell ISE** script pane **(1)**, paste the following script, and then click on the green **Run Script (3)** button or press the **F5** key:
+1. Finally, look at what is actually inside the migrated database. In the **Windows PowerShell ISE** script pane **(1)**, paste the following script, and then click on the green **Run Script (2)** button or press the **F5** key:
 
    ```powershell
    $connection = New-Object System.Data.SqlClient.SqlConnection($connectionString)
