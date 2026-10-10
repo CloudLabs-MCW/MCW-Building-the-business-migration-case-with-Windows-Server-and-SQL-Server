@@ -86,7 +86,7 @@ In this task, you provision the virtual machine that will host the migrated web 
 
 1. After the **Validation passed** message appears, select **Create** to begin provisioning the virtual machine.
 
-   > **Note:** If validation fails, expand the error message at the top of the page. The most common causes are a virtual machine name that is already in use and a size that is unavailable in the selected region.
+   > **Note:** If validation fails due to the applied Azure Policy, verify the **VM size and image**. Make sure you select the permitted VM size and image, then proceed with creating the VM.
 
    ![](img/Lab02/img6.png)
 
