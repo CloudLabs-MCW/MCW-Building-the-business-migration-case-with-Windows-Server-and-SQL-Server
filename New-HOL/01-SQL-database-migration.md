@@ -208,7 +208,7 @@ Azure Database Migration Service reads the source backup from an Azure Storage b
 
 1. In the left **Explorer** pane, expand your **subscription (1)**, expand **Storage Accounts**, expand **storage<inject key="DeploymentID" enableCopy="false"/>**, expand **Blob Containers**, and then select the **sql-backup (2)** container.
 
-   ![](img/Lab01/img31.png)
+   ![](img/Lab01/img31-1.png)
 
 1. Select **Upload (1)**, and then select **Upload Directory (2)**.
 

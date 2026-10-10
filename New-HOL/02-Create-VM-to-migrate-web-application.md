@@ -113,13 +113,16 @@ Because the virtual machine has no public IP address, you cannot connect to it d
 
    > **Note:** Azure Bastion delivers the RDP session to your browser over HTTPS on port 443. Port 3389 is never exposed to the internet, which removes one of the most commonly attacked entry points on a server.
 
+   > **Note:** If the session does not open, check that your browser is not blocking pop-up windows for the Azure portal.
+
    ![](img/Lab02/img10.png)
 
 1. A new browser tab opens with the virtual machine connected over RDP through Azure Bastion. This confirms that secure remote access works.
 
-   > **Note:** If the session does not open, check that your browser is not blocking pop-up windows for the Azure portal.
-
    ![](img/Lab02/img9.png)
+
+   > **Note:** If **Send diagnostic data to Microsoft** window pops up, click on **Accept**.
+   ![](img/Lab02/senddata.png)
 
 1. Keep this session open. You will continue working inside this virtual machine in the next task.
 
