@@ -2,7 +2,7 @@
 
 ### Estimated Duration: 120 Minutes
 
-## 📘 Lab Scenario
+## 📘 Scenario
 
 Tailspin Toys has moved its database to Azure SQL Managed Instance, but the SQL Server VM is still the machine you use to work with it. Leadership now asks a simple question: if that VM is lost or damaged, how quickly can you get it back? In this exercise you protect the VM with Azure Backup, run a backup, and restore from it.
 
@@ -16,16 +16,16 @@ The only prerequisite is the SQL Server virtual machine already deployed in your
 
 In this exercise, you will complete the following tasks:
 
-- **Task 1:** Register the Recovery Services resource provider
+- **Task 1:** Register the Recovery Services resource provider **(Read-Only)**
 - **Task 2:** Create a Recovery Services vault
 - **Task 3:** Create a backup policy and enable backup
 - **Task 4:** Run an on-demand backup
 - **Task 5:** Restore the VM disks from a recovery point
 - **Task 6:** Clean up the backup configuration
 
-## Task 1: Register the Recovery Services resource provider
+## Task 1: Register the Recovery Services resource provider **(Read-Only)**
 
-In this task, you confirm that the subscription have create Recovery Services vaults, which is a one-time requirement before Azure Backup can be used.
+In this task, you confirm that the Microsoft.RecoveryServices resource provider is registered in the subscription. This is required before you can create Recovery Services vaults.
 
 1. In the Azure portal, search for **Subscriptions (1)** and select the **Subscriptions (2)**.
 
@@ -62,6 +62,8 @@ In this task, you create the Recovery Services vault that will store the SQL Ser
 
 1. When the deployment completes, select **Go to resource**.
 
+    > **Note:** Deployment of the **Recovery Services vault** can take up to five minutes.
+
     ![](img/Lab04/img7.png)
 
 1. On the Recovery Services vault page, under **Settings (1)**, select **Properties (2)**. Under **Backup Configuration**, select **Update (3)**.
@@ -72,7 +74,7 @@ In this task, you create the Recovery Services vault that will store the SQL Ser
 
     ![](img/Lab04/img10.png)
 
-    > **Note:** The replication type must be set before the first item is protected. It cannot be changed afterwards.
+    > **Note:** The replication type must be set before the first item is protected. It cannot be changed after an item is protected." Also move it before the image
 
 ## Task 3: Create a backup policy and enable backup
 
@@ -91,6 +93,7 @@ In this task, you define how often backups run and how long they are kept, and t
     ![](img/Lab04/img9.png)
 
 1. Enter the following details, and then select **Create (6)**:
+
    - **Policy sub type (1):** Standard
    - **Policy name (2):** **policy-tailspin-daily**
    - **Backup schedule (3):** Daily, at a time of your choice
@@ -107,17 +110,19 @@ In this task, you define how often backups run and how long they are kept, and t
 
     ![](img/Lab04/img13.png)
 
-1. Under the **Virtual machines** section, select **Add**.
+1. Scroll down to the **Virtual machines** section, select **Add**.
 
     ![](img/Lab04/img16.png)
 
-1. Select the **SQL Server VM (1)**, and then select **OK (2)**.
+1. Select the **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm (1)**, and then select **OK (2)**.
 
     ![](img/Lab04/img17.png)
 
 1. Select **Enable backup**.
 
     ![](img/Lab04/img18.png)
+
+    >**Note:** It may take 2-3 minutes to configure the backup.
 
 ## Task 4: Run an on-demand backup
 
@@ -127,7 +132,7 @@ In this task, you trigger an immediate backup instead of waiting for the daily s
 
     ![](img/Lab04/img19.png)
 
-1. Select the SQL Server VM, and then select **View Details**.
+1. Select **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**, and then select **View Details**.
 
     ![](img/Lab04/img20.png)
 
@@ -147,7 +152,7 @@ In this task, you trigger an immediate backup instead of waiting for the daily s
 
     ![](img/Lab04/img24.png)
 
-1. On the backup details page, review the progress, and wait for the process to complete.
+1. On the backup details page, review the progress, and wait for the process to complete. Select **Refresh** to update the status..
 
     ![](img/Lab04/img25.png)
 
@@ -165,7 +170,7 @@ In this task, you restore the VM's disks from the recovery point you just create
 
     ![](img/Lab04/img27.png)
 
-1. Select the SQL Server VM, and then select **View Details**.
+1. Select **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**, and then select **View Details**.
 
     ![](img/Lab04/img20.png)
 
@@ -173,7 +178,7 @@ In this task, you restore the VM's disks from the recovery point you just create
 
     ![](img/Lab04/img28.png)
 
-1. On the **Restore Virtual Machine** page, under **Restore point**, select **Select (1)**. On the **Select restore point** pane, select the desired restore point **(2)**, and then select **OK (3)**. Finally, select **Restore (4)**.
+1. On the **Restore Virtual Machine** page, under **Restore point**, click **Select (1)**. On the **Select restore point** pane, select the desired restore point **(2)**, and then select **OK (3)**.
 
     ![](img/Lab04/img29.png)
 
@@ -183,11 +188,13 @@ In this task, you restore the VM's disks from the recovery point you just create
     - **Restore type (2):** Restore disks
     - **Subscription (3):** Select the appropriate subscription
     - **Resource group (4):** **tailspin-<inject key="DeploymentID" enableCopy="false"/>**
-    - **Staging location (5):** Select the appropriate storage account
+    - **Staging location (5):** Select **storage<inject key="DeploymentID" enableCopy="false"/>**
+
+    > **Note:** If the Transfer data to vault subtask is still running, the restore point is a snapshot-tier point and some options may be unavailable. Select the values above where available.
 
     ![](img/Lab04/img30.png)
 
-1. Follow the restore job **(2)** under **Backup jobs**.
+1. Under **Monitoring**, select **Backup jobs (1)**, and then monitor the **Restore job (2)** until it shows Completed
 
     ![](img/Lab04/img31.png)
 
@@ -201,7 +208,7 @@ In this task, you restore the VM's disks from the recovery point you just create
 
 A vault that still holds backup data cannot be deleted, and this blocks the clean-up of the resource group. Remove the backup data before you finish.
 
-1. Go to **Recovery service vault (1)** select **Backup items (2)**, then **Azure Virtual Machine (3)**, and select the SQL Server VM.
+1. In the **Recovery Services vault (1)**, select **Backup items (2)**, select **Azure Virtual Machine (3)**, and then select **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-sql-vm**.
 
     ![](img/Lab04/img33.png)
 
@@ -225,7 +232,7 @@ A vault that still holds backup data cannot be deleted, and this blocks the clea
 
 In this exercise, you have accomplished the following:
 
-* Registered the Recovery Services resource provider in the subscription
+* Verified that the Recovery Services resource provider is registered
 * Created a Recovery Services vault and set its storage replication type to locally-redundant
 * Created a daily backup policy with instant restore and 7-day retention, and enabled backup on the SQL Server VM
 * Ran an on-demand backup and monitored the backup job
