@@ -4,11 +4,11 @@
 
 ## 📘 Scenario
 
-In this exercise, you create a new **Windows Server 2025 Datacenter: Azure Edition** virtual machine that will be the destination for migrating Tailspin Toys' web application to Azure. You then connect to it securely using **Azure Bastion**, and confirm that it can reach the database you migrated in Exercise 1. Windows Server Datacenter: Azure Edition is a virtual-only edition that runs as an Azure virtual machine and includes capabilities such as Hotpatching, which installs security updates without requiring a restart.
+In this exercise, you create a new **Windows Server 2025 Datacenter: Azure Edition** virtual machine that will be the destination for migrating Tailspin Toys' web application to Azure. You then connect to it using **Remote Desktop**, and confirm that it can reach the database you migrated in Exercise 1. Windows Server Datacenter: Azure Edition is a virtual-only edition that runs as an Azure virtual machine and includes capabilities such as Hotpatching, which installs security updates without requiring a restart.
 
 ## 📋 Overview
 
-This exercise provisions the Azure virtual machine that will host the migrated web application. You create the virtual machine inside the lab virtual network, keep it off the public internet by omitting a public IP address, and then validate secure administrative access using Azure Bastion.
+This exercise provisions the Azure virtual machine that will host the migrated web application. You create the virtual machine inside the lab virtual network, and then validate administrative access using Remote Desktop.
 
 You then connect from the new application server to the Azure SQL Managed Instance and inspect the migrated database, which confirms that the application tier and the data tier can reach each other privately.
 
@@ -19,7 +19,7 @@ You then connect from the new application server to the Azure SQL Managed Instan
 In this exercise, you will complete the following tasks:
 
 - **Task 1:** Create a Windows Server 2025 Datacenter: Azure Edition virtual machine
-- **Task 2:** Connect to the virtual machine using Azure Bastion
+- **Task 2:** Connect to the virtual machine using Remote Desktop
 - **Task 3:** Verify connectivity to the migrated database
 
 ## Task 1: Create a Windows Server 2025 Datacenter: Azure Edition virtual machine
@@ -70,15 +70,15 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    ![](img/Lab02/img4.png)
 
-1. Select **Next** to reach the **Networking** tab. Enter the following values so that the virtual machine joins the lab virtual network with no public IP address, and then select **Review + create (4)**:
+1. Select **Next** to reach the **Networking** tab. Enter the following values so that the virtual machine joins the lab virtual network, and then select **Review + create (6)**:
 
    - **Virtual network (1)**: **vnet-sqlmi-hol**
    - **Subnet (2)**: **Managed**
-   - **Public IP (3)**: **None**
+   - **Public IP (3)**: Keep the default **(new)**
+   - **Public inbound ports (4)**: **Allow selected ports**
+   - **Select inbound ports (5)**: **RDP (3389)**
 
-   > **Note:** Setting the public IP address to **None** keeps the virtual machine off the public internet. You will connect to it securely using Azure Bastion in the next task.
-
-   > **Note:** Placing the virtual machine in **vnet-sqlmi-hol** connects it to the same virtual network as the SQL Managed Instance migrated in **Exercise 1**. This allows the application to communicate with the database through the private endpoint over port **1433**, keeping the traffic within the Azure backbone.
+   > **Note:** The public IP address and the **RDP (3389)** rule let you connect to the virtual machine from your own computer in the next task. The warning that RDP allows all IP addresses is expected in this lab.
 
    > **Note:** Select the **Managed** subnet, not **ManagedInstance**. The **ManagedInstance** subnet is delegated to the SQL Managed Instance service and cannot host virtual machines.
 
@@ -96,28 +96,44 @@ In this task, you provision the virtual machine that will host the migrated web 
 
    ![](img/Lab02/img7.png)
 
-## Task 2: Connect to the virtual machine using Azure Bastion
+## Task 2: Connect to the virtual machine using Remote Desktop
 
-Because the virtual machine has no public IP address, you cannot connect to it directly over the internet. In this task, you use Azure Bastion to open a secure RDP session from inside the Azure portal.
+Because the virtual machine has a public IP address, you can connect to it directly over the internet. In this task, you use Remote Desktop to open an RDP session to the virtual machine.
 
-1. On the **tailspin-webapp-vm** virtual machine page, select **Bastion** from the left menu under **Connect**.
+1. In the left navigation pane, expand **Connect (1)**, and then select **Connect (2)**. On the **Connect** page, scroll down and click on **Download RDP file (3)**.
 
-   ![](img/Lab02/img8.png)
+   ![](img/Lab03/RDP1.png)
 
-1. On the **Bastion** pane, enter the following credentials, and then select **Connect (3)**:
+1. When the download starts, a **Downloads** pane may appear at the top right of your browser with the message **could harm your device. Do you want to keep it anyway?**. This is a standard browser warning for RDP files, and the file is safe. Click on **Keep**.
 
-   - **Username (1):** azureuser
-   - **Password (2):** azureuser!pass123
+   ![](img/Lab03/rdp2.png)
 
-   > **Note:** The Azure Bastion host, named similar to **vnet-sqlmi-hol-bastion**, was created as part of the lab environment, so you can connect without deploying anything extra.
+1. In the **Downloads** pane, click on **Open file (2)**
 
-   > **Note:** Azure Bastion delivers the RDP session to your browser over HTTPS on port 443. Port 3389 is never exposed to the internet, which removes one of the most commonly attacked entry points on a server.
+   ![](img/Lab03/rdp3.png)
 
-   > **Note:** If the session does not open, check that your browser is not blocking pop-up windows for the Azure portal.
+1. The **Remote Desktop Connection** window opens with the message **The publisher of this remote connection can't be identified. Do you want to connect anyway?**. This appears because the file is not digitally signed. Click on **Connect**.
 
-   ![](img/Lab02/img10.png)
+   ![](img/Lab03/rdp4.png)
 
-1. A new browser tab opens with the virtual machine connected over RDP through Azure Bastion. This confirms that secure remote access works.
+1. In the **Windows Security** window, enter the following credentials, and then click on **OK (3)**:
+
+   - **Username (1)**: **azureuser**
+   - **Password (2)**: **azureuser!pass123**
+
+   > **Note:** Type `.\` (a dot and a backslash) before the username, exactly as shown. It tells Windows to sign in with a local account on the virtual machine, not with an account from your own computer or organization. If the username box already shows a different account, click on **More choices**, select **Use a different account**, and then enter the username and the password.
+
+   ![](img/Lab03/rdp5.png)
+
+1. A **Remote Desktop Connection** window may show the message **The identity of the remote computer cannot be verified. Do you want to connect anyway?**. This appears because the server uses a self-signed certificate, which is expected in this lab. Click on **Yes**.
+
+   ![](img/Lab03/rdp6.png)
+
+1. Wait for a few seconds until the desktop of **tailspin-webapp-vm** appears. You are now connected to the virtual machine.
+
+   > **Note:** If you are asked for the credentials again, enter the same username and password.
+
+1. A new browser tab opens with the virtual machine connected over RDP. This confirms that remote access works.
 
    ![](img/Lab02/img9.png)
 
@@ -132,7 +148,7 @@ Because the virtual machine has no public IP address, you cannot connect to it d
 
 Placing this virtual machine in **vnet-sqlmi-hol** is what allows the application to reach the Managed Instance privately. In this task you prove it, by connecting from the new application server to the database you migrated in Exercise 1.
 
-1. Return to the Azure Bastion session for **tailspin-webapp-vm**. If you closed it, reconnect using the steps in Task 2.
+1. Return to the Remote Desktop session for **tailspin-webapp-vm**. If you closed it, reconnect using the steps in Task 2.
 
 1. Copy the following values from the **Environment** tab of your lab environment and paste them into Notepad. You will need them in the steps that follow:
 
@@ -278,7 +294,7 @@ In this exercise, you accomplished the following:
 
 - Created a Windows Server 2025 Datacenter: Azure Edition virtual machine to host the migrated web application.
 - Placed the virtual machine in the lab virtual network with no public IP address.
-- Verified secure remote desktop access to the virtual machine using Azure Bastion.
+- Verified remote desktop access to the virtual machine using Remote Desktop.
 - Confirmed private connectivity from the application server to the Azure SQL Managed Instance on port 1433.
 - Inspected the migrated database, including its configuration and its largest tables.
 

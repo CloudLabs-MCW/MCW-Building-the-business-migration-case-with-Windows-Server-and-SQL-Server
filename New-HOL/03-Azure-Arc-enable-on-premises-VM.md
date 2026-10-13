@@ -78,18 +78,38 @@ In this task, you connect to the simulated on-premises server and run the onboar
 
    ![](img/Lab03/img8.png)
 
-1. On the left menu, under **Connect (1)**, select **Bastion (2)**.
+1. In the left navigation pane, expand **Connect (1)**, and then select **Connect (2)**. On the **Connect** page, scroll down and click on **Download RDP file (3)**.
 
-   ![](img/Lab03/img9.png)
+   ![](img/Lab03/RDP1.png)
 
-1. Enter the following credentials, and then select **Connect (3)**:
+1. When the download starts, a **Downloads** pane may appear at the top right of your browser with the message **could harm your device. Do you want to keep it anyway?**. This is a standard browser warning for RDP files, and the file is safe. Click on **Keep**.
 
-   - **Username (1)**: labuser
-   - **VM Password (2)**: labuser!pass123
+   ![](img/Lab03/rdp2.png)
 
-   > **Note:** The virtual machine opens in a new browser tab. Azure Bastion provides this session over HTTPS, so the Hyper-V host never needs an open RDP port on the internet.
+1. In the **Downloads** pane, click on **Open file (2)** under the **tailspin-onprem-<inject key="DeploymentID" enableCopy="false"/>-hyperv-vm.rdp** file.
 
-   ![](img/Lab03/img10.png)
+   ![](img/Lab03/rdp3.png)
+
+1. The **Remote Desktop Connection** window opens with the message **The publisher of this remote connection can't be identified. Do you want to connect anyway?**. This appears because the file is not digitally signed. Click on **Connect**.
+
+   ![](img/Lab03/rdp4.png)
+
+1. In the **Windows Security** window, enter the following credentials, and then click on **OK (3)**:
+
+   - **Username (1)**: **labuser**
+   - **Password (2)**: **labuser!pass123**
+
+   > **Note:** Type `.\` (a dot and a backslash) before the username, exactly as shown. It tells Windows to sign in with a local account on the virtual machine, not with an account from your own computer or organization. If the username box already shows a different account, click on **More choices**, select **Use a different account**, and then enter the username and the password.
+
+   ![](img/Lab03/rdp5.png)
+
+1. A **Remote Desktop Connection** window may show the message **The identity of the remote computer cannot be verified. Do you want to connect anyway?**. This appears because the server uses a self-signed certificate, which is expected in this lab. Click on **Yes**.
+
+   ![](img/Lab03/rdp6.png)
+
+1. Wait for a few seconds until the desktop of the Hyper-V host appears. You are now connected to the virtual machine.
+
+   > **Note:** If you are asked for the credentials again, enter the same username and password.
 
 1. On the Hyper-V host, double-click on **Hyper-V Manager** to open it.
 

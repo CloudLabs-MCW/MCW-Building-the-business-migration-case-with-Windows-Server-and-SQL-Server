@@ -20,7 +20,7 @@ By the end of this lab, you will be able to:
 
 - **Exercise 1 - Migrate the SQL Database to Azure SQL Managed Instance:** Back up the on-premises WideWorldImporters database, upload it to Azure Blob Storage, migrate it to a pre-provisioned Azure SQL Managed Instance using Azure Database Migration Service (DMS) from the Azure portal, and verify that the migrated database is online.
 
-- **Exercise 2 - Create a Virtual Machine to Host the Web Application:** Create a Windows Server 2025 Datacenter: Azure Edition virtual machine to serve as the destination host for the migrated web application, validate secure remote access using Azure Bastion, and verify private connectivity from the virtual machine to the migrated database.
+- **Exercise 2 - Create a Virtual Machine to Host the Web Application:** Create a Windows Server 2025 Datacenter: Azure Edition virtual machine to serve as the destination host for the migrated web application, connect to it using Remote Desktop, and verify private connectivity from the virtual machine to the migrated database.
 
 - **Exercise 3 - Connect the On-Premises VM to Azure Arc:** Generate and run the Azure Arc onboarding script to connect an on-premises Windows Server virtual machine to Azure, and review the management capabilities it gains through Azure Arc.
 
@@ -39,7 +39,7 @@ Participants should have:
 
 ## 🏗️ Architecture
 
-This architecture represents a hybrid migration workflow. A simulated on-premises environment, consisting of a Hyper-V host virtual machine and a SQL Server virtual machine, runs the source WideWorldImporters database. The database is migrated to a pre-provisioned Azure SQL Managed Instance that resides in a delegated subnet within an Azure virtual network. A Windows Server 2025 Datacenter: Azure Edition virtual machine is provisioned within the same virtual network to host the migrated web application, with secure administrative access provided through Azure Bastion. A virtual machine running inside the Hyper-V host is Azure Arc-enabled so that it can be managed centrally from Azure without being migrated. The SQL Server virtual machine is additionally protected by an Azure Recovery Services vault, which stores its backups and provides a recovery point for restoring its disks.
+This architecture represents a hybrid migration workflow. A simulated on-premises environment, consisting of a Hyper-V host virtual machine and a SQL Server virtual machine, runs the source WideWorldImporters database. The database is migrated to a pre-provisioned Azure SQL Managed Instance that resides in a delegated subnet within an Azure virtual network. A Windows Server 2025 Datacenter: Azure Edition virtual machine is provisioned within the same virtual network to host the migrated web application, with administrative access provided through Remote Desktop. A virtual machine running inside the Hyper-V host is Azure Arc-enabled so that it can be managed centrally from Azure without being migrated. The SQL Server virtual machine is additionally protected by an Azure Recovery Services vault, which stores its backups and provides a recovery point for restoring its disks.
 
 ## 🖼️ Architecture Diagram
 
@@ -61,13 +61,11 @@ This architecture represents a hybrid migration workflow. A simulated on-premise
 
 - **Windows Server 2025 Datacenter: Azure Edition VM:** The destination virtual machine that will host the migrated web application, benefiting from Azure Edition capabilities such as Hotpatching, which installs most security updates without requiring a restart.
 
-- **Azure Bastion:** Provides secure RDP connectivity to Azure virtual machines directly from the Azure portal. The web application VM has no public IP address, so it is reached only through Bastion, without exposing an RDP port to the internet.
-
 - **Azure Arc:** Extends Azure management, governance, and monitoring to machines hosted outside of Azure through the Azure Connected Machine agent. Once connected, each machine is treated as a resource in Azure with its own Azure Resource ID.
 
 - **Azure Recovery Services vault:** Stores backups of the SQL Server virtual machine and provides the restore point used to recover its disks in Exercise 4.
 
-- **Azure Virtual Network:** Hosts the lab resources, including the delegated **ManagedInstance** subnet for the Azure SQL Managed Instance, the **Managed** subnet for the virtual machines, and the **AzureBastionSubnet** for Azure Bastion.
+- **Azure Virtual Network:** Hosts the lab resources, including the delegated **ManagedInstance** subnet for the Azure SQL Managed Instance, and the **Managed** subnet for the virtual machines.
 
 ## 🚀 Getting Started with the Lab
 
@@ -179,7 +177,6 @@ This resource group holds the Azure SQL Managed Instance and the network it live
 | **vnet-sqlmi-hol** | Virtual network | The network that contains both the Managed Instance and your lab virtual machines. Because they share a virtual network, traffic between them stays on the Azure backbone and never crosses the public internet. |
 | **nsg-sqlmi-hol** | Network security group | Applied to the Managed Instance subnet. Azure requires a network security group on any subnet that hosts a Managed Instance. |
 | **rt-sqlmi-hol** | Route table | Also applied to the Managed Instance subnet, and also required by Azure. It directs Managed Instance management traffic correctly. |
-| **vnet-sqlmi-hol-bastion** | Bastion | Provides the secure browser-based RDP sessions you use to connect to the virtual machines in Exercises 2 and 3, without any virtual machine needing an open RDP port on the internet. |
 | **VirtualCluster...** | Virtual cluster | Created automatically by Azure when the Managed Instance was deployed. It is part of the Managed Instance infrastructure and is not something you interact with. |
 
 ### How the network is laid out
@@ -191,7 +188,6 @@ The virtual network **vnet-sqlmi-hol** is divided into subnets, and each one has
 | **ManagedInstance** | 10.0.0.0/24 | The SQL Managed Instance. This subnet is *delegated* to the Managed Instance service, which means no other resource type can be placed in it. |
 | **Managed** | 10.0.1.0/24 | Your lab virtual machines, and the web application virtual machine you create in Exercise 2. |
 | **DMS** | 10.0.2.0/24 | Reserved for Azure Database Migration Service. |
-| **AzureBastionSubnet** | 10.0.3.0/26 | Azure Bastion. This subnet must carry exactly this name, which is a requirement of the Bastion service. |
 
 > **Note:** This layout is the reason the migration works over a private connection. Because your virtual machines sit in the **Managed** subnet and the Managed Instance sits in the **ManagedInstance** subnet of the same virtual network, they reach each other on port **1433** over the private endpoint. Had they been in separate virtual networks, the Managed Instance would only have been reachable over its public endpoint on port 3342.
 
